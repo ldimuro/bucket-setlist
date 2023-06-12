@@ -1,0 +1,106 @@
+{
+    "data": [
+        {
+            "song_name": "Bodysnatchers",
+            "artist": "Radiohead",
+            "album": "In Rainbows",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Welcome to Japan",
+            "artist": "The Strokes",
+            "album": "Comedown Machine",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Blue Like Jazz",
+            "artist": "Weezer",
+            "album": "SZNZ (Summer)",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Can't Stop",
+            "artist": "Red Hot Chili Peppers",
+            "album": "By the Way",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Bohemian Rhapsody",
+            "artist": "Queen",
+            "album": "A Night at the Opera",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Ode to Viceroy",
+            "artist": "Mac Demarco",
+            "album": "2",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Elephant",
+            "artist": "Tame Impala",
+            "album": "Lonerism",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "You Only Live Once",
+            "artist": "The Strokes",
+            "album": "First Impressions of Earth",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "R U Mine?",
+            "artist": "Arctic Monkeys",
+            "album": "AM",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Say It Ain't So",
+            "artist": "Weezer",
+            "album": "Weezer (Blue Album)",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "New Person, Same Old Mistakes",
+            "artist": "Tame Impala",
+            "album": "Currents",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Where I End and You Begin",
+            "artist": "Radiohead",
+            "album": "Hail to the Thief",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Last Nite",
+            "artist": "The Strokes",
+            "album": "Is This It?",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Salad Days",
+            "artist": "Mac DeMarco",
+            "album": "Salad Days",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Is it True",
+            "artist": "Tame Impala",
+            "album": "The Slow Rush",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "Paranoid Android",
+            "artist": "Radiohead",
+            "album": "OK Computer",
+            "cover_art": "/assets/placeholder.jpeg"
+        },
+        {
+            "song_name": "El Scorcho",
+            "artist": "Weezer",
+            "album": "Pinkerton",
+            "cover_art": "/assets/placeholder.jpeg"
+        }
+    ]
+}
