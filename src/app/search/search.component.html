@@ -1,29 +1,46 @@
-<h1 class="center">THE BUCKET SETLIST</h1>
+<div id="searchComponent">
+    <h1 class="center">THE BUCKET SETLIST</h1>
 
-<p class="center">If you could only contribute a single song, which would you choose?</p>
+    <p class="center">If you could only contribute a single song, which would you choose?</p>
 
-<br>
+    <br>
 
-<!-- <img src="/assets/placeholder.jpeg" width="100px" height="100px"> -->
+    <!-- <img src="/assets/placeholder.jpeg" width="100px" height="100px"> -->
 
-<div class="center">
-  <input class="searchBar" placeholder="Enter a song/artist/album/etc.">
+    <div class="center">
+        <input class="searchBar" placeholder="Enter a song/artist/album/etc.">
+    </div>
+
+    <div class="center-div">
+        <div *ngIf="total_songs" class="grid-container">
+            <div *ngFor="let song of total_songs" class="grid-item" (click)="songClicked(song)">
+                <div>
+                    <img style="float: left;" src="{{song.cover_art}}" width="100px" height="100px">
+                </div>
+                <div class="song-data">
+                    <div>
+                        {{song.song_name}}
+                    </div>
+                    <div>
+                        {{song.artist}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="center-div">
-  <div *ngIf="total_songs" class="grid-container">
-    <div *ngFor="let song of total_songs" class="grid-item">
-      <div style="background-color: pink;">
-        <img style="float: left;" src="{{song.cover_art}}" width="100px" height="100px">
-      </div>
-      <div class="song-data">
-        <div>
-          {{song.song_name}}
+<!-- SONG CONFIRMATION MODAL -->
+<div [hidden]="!confirmation_modal_open" class="modal confirmation-modal" id="confirmation-modal">
+    <div>
+        <div class="modal_title" style="font-size: 18px; text-align: center; padding-top: 25px; width: 90%; margin: 0 auto;">
+            <div style="padding-bottom: 25px;">Are you sure you want to select:</div>
+            <b style="font-size: 22px;">{{selected_song?.song_name}} &#8212; {{selected_song?.artist}}</b>
         </div>
-        <div>
-          {{song.artist}}
-        </div>
-      </div>
     </div>
-  </div>
+
+    <div style="position: absolute; bottom: 0;margin: 0 auto;width: 100%;display: flex; justify-content: center; padding-bottom: 30px;">
+        <button (click)="confirmSong()" style="font-size: 20px; width:60px;margin-right: 5px;">YES</button>
+        <button (click)="cancel()" style="font-size: 20px; width:60px;">NO</button>
+    </div>
 </div>
