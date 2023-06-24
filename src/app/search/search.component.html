@@ -1,23 +1,37 @@
-<div id="searchComponent">
+<div id="searchComponent" style="height: 95vh; width: 95vw;">
     <h1 class="center">THE BUCKET SETLIST</h1>
 
     <p class="center">If you could only contribute a single song, which would you choose?</p>
 
     <br>
 
-    <!-- <img src="/assets/placeholder.jpeg" width="100px" height="100px"> -->
-
     <div class="center">
+        <select class="searchDropdown" name="searchDropdown" id="searchDropdown">
+            <option value="song">Song</option>
+            <option value="artist">Artist</option>
+            <option value="album">Album</option>
+        </select>
         <input class="searchBar" placeholder="Enter a song/artist/album/etc.">
     </div>
 
-    <div class="center-div">
-        <div *ngIf="total_songs" class="grid-container">
+    <div class="center-div" style="height: 80%; width: 100%; overflow: scroll; margin-top: 10px;">
+        <div *ngIf="total_songs">
+            <div *ngFor="let song of total_songs" (click)="songClicked(song)" class="row"
+                style="width: 75vw; height: 50px; margin-bottom:10px;">
+                <div style="float: left; width: 10%;"><img src="{{song.cover_art}}" width="50px" height="50px"></div>
+                <div class="col" style="width: 40%"><span class="sub-col">{{song.song_name}}</span></div>
+                <div class="col" style="width: 25%"><span class="sub-col">{{song.artist}}</span></div>
+                <div class="col" style="width: 25%"><span class="sub-col">{{song.album}}</span></div>
+            </div>
+        </div>
+
+
+        <!-- <div *ngIf="total_songs" class="grid-container">
             <div *ngFor="let song of total_songs" class="grid-item" (click)="songClicked(song)">
-                <div>
-                    <img style="float: left;" src="{{song.cover_art}}" width="100px" height="100px">
+                <div style="width: 50%; float:left; background-color: pink;">
+                    <img style="float: left;" src="{{song.cover_art}}" width="80px" height="80px">
                 </div>
-                <div class="song-data">
+                <div style="width: 50%; float:right; background-color: aquamarine;">
                     <div>
                         {{song.song_name}}
                     </div>
@@ -26,20 +40,22 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 
 <!-- SONG CONFIRMATION MODAL -->
 <div [hidden]="!confirmation_modal_open" class="modal confirmation-modal" id="confirmation-modal">
     <div>
-        <div class="modal_title" style="font-size: 18px; text-align: center; padding-top: 25px; width: 90%; margin: 0 auto;">
+        <div class="modal_title"
+            style="font-size: 18px; text-align: center; padding-top: 25px; width: 90%; margin: 0 auto;">
             <div style="padding-bottom: 25px;">Are you sure you want to select:</div>
             <b style="font-size: 22px;">{{selected_song?.song_name}} &#8212; {{selected_song?.artist}}</b>
         </div>
     </div>
 
-    <div style="position: absolute; bottom: 0;margin: 0 auto;width: 100%;display: flex; justify-content: center; padding-bottom: 30px;">
+    <div
+        style="position: absolute; bottom: 0;margin: 0 auto;width: 100%;display: flex; justify-content: center; padding-bottom: 30px;">
         <button (click)="confirmSong()" style="font-size: 20px; width:60px;margin-right: 5px;">YES</button>
         <button (click)="cancel()" style="font-size: 20px; width:60px;">NO</button>
     </div>

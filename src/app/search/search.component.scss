@@ -3,9 +3,19 @@
 }
 
 .searchBar {
-    width: 70%;
+    width: 40%;
     height: 30px;
-    font-size: 20px;
+    font-size: 18px;
+
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.searchDropdown {
+    height: 30px;
+    width: 100px;
+    margin-right: 10px;
 
     border-radius: 5px;
     border-style: solid;
@@ -14,9 +24,9 @@
 
 .grid-container {
     display: grid;
-    grid-template-columns: 300px 300px 300px;
+    grid-template-columns: 300px 300px 300px 300px;
     padding: 10px;
-    width: 70%;
+    width: 90%;
 }
 
 .grid-item {
@@ -42,6 +52,31 @@
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+    margin-bottom: 10px;
+}
+
+.row:hover {
+    background-color: rgb(229, 229, 229);
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.col {
+    float: left;
+    // width: 30%;
+    height: 100%;
+    display: table;
+}
+
+.sub-col {
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .confirmation-modal {
