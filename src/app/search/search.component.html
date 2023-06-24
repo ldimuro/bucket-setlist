@@ -1,11 +1,11 @@
-<div id="searchComponent" style="height: 95vh; width: 95vw;">
+<div id="searchComponent" style="height: 95vh; width: 100vw;">
     <h1 class="center">THE BUCKET SETLIST</h1>
 
     <p class="center">If you could only contribute a single song, which would you choose?</p>
 
     <br>
 
-    <div class="center">
+    <div class="center" style="margin-bottom: 20px;">
         <select class="searchDropdown" name="searchDropdown" id="searchDropdown">
             <option value="song">Song</option>
             <option value="artist">Artist</option>
@@ -14,14 +14,15 @@
         <input class="searchBar" placeholder="Enter a song/artist/album/etc.">
     </div>
 
-    <div class="center-div" style="height: 80%; width: 100%; overflow: scroll; margin-top: 10px;">
-        <div *ngIf="total_songs">
+    <div class="all-songs">
+        <div *ngIf="total_songs" class="rows">
             <div *ngFor="let song of total_songs" (click)="songClicked(song)" class="row"
-                style="width: 75vw; height: 50px; margin-bottom:10px;">
-                <div style="float: left; width: 10%;"><img src="{{song.cover_art}}" width="50px" height="50px"></div>
-                <div class="col" style="width: 40%"><span class="sub-col">{{song.song_name}}</span></div>
+                style="width: 70vw; height: 50px; margin-bottom:10px;">
+                <div style="float: left; width: 6%;"><img src="{{song.cover_art}}" width="50px" height="50px"></div>
+                <div class="col" style="width: 30%"><span class="sub-col">{{song.song_name}}</span></div>
                 <div class="col" style="width: 25%"><span class="sub-col">{{song.artist}}</span></div>
                 <div class="col" style="width: 25%"><span class="sub-col">{{song.album}}</span></div>
+                <div class="col" style="width: 5%"><span class="sub-col">{{song.length}}</span></div>
             </div>
         </div>
 
@@ -46,17 +47,23 @@
 
 <!-- SONG CONFIRMATION MODAL -->
 <div [hidden]="!confirmation_modal_open" class="modal confirmation-modal" id="confirmation-modal">
-    <div>
-        <div class="modal_title"
-            style="font-size: 18px; text-align: center; padding-top: 25px; width: 90%; margin: 0 auto;">
-            <div style="padding-bottom: 25px;">Are you sure you want to select:</div>
-            <b style="font-size: 22px;">{{selected_song?.song_name}} &#8212; {{selected_song?.artist}}</b>
+    <div class="modal-content">
+        <div class="modal-title" style="font-size: 18px; width: 100%;">
+            <img src="{{selected_song?.cover_art}}" width="35%" height="35%" />
+
+            <br>
+
+            <b style="font-size: 22px; margin-top: 3px;">{{selected_song?.song_name}}</b>
+
+            <br>
+
+            <b>{{selected_song?.artist}}</b>
         </div>
     </div>
 
     <div
         style="position: absolute; bottom: 0;margin: 0 auto;width: 100%;display: flex; justify-content: center; padding-bottom: 30px;">
-        <button (click)="confirmSong()" style="font-size: 20px; width:60px;margin-right: 5px;">YES</button>
-        <button (click)="cancel()" style="font-size: 20px; width:60px;">NO</button>
+        <button (click)="confirmSong()" style="font-size: 20px; margin-right: 10px;">Choose Song</button>
+        <button (click)="cancel()" style="font-size: 20px;">Cancel</button>
     </div>
 </div>
