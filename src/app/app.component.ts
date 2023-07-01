@@ -36,6 +36,8 @@ export class AppComponent implements OnInit{
     
         //I don't think we need this in the final version, but it'll be useful to see if the login is working
         //populateUI(profile);
+
+        console.log(profile);
     }
     
   }
