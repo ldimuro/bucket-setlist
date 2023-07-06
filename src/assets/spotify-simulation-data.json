@@ -4,103 +4,120 @@
             "song_name": "Bodysnatchers",
             "artist": "Radiohead",
             "album": "In Rainbows",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/inrainbows.png",
+            "length": "4:35"
         },
         {
             "song_name": "Welcome to Japan",
             "artist": "The Strokes",
             "album": "Comedown Machine",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/comedownmachine.jpeg",
+            "length": "3:45"
         },
         {
             "song_name": "Blue Like Jazz",
             "artist": "Weezer",
             "album": "SZNZ (Summer)",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/sznzsummer.jpg",
+            "length": "4:01"
         },
         {
             "song_name": "Can't Stop",
             "artist": "Red Hot Chili Peppers",
             "album": "By the Way",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/bytheway.jpg",
+            "length": "3:30"
         },
         {
             "song_name": "Bohemian Rhapsody",
             "artist": "Queen",
             "album": "A Night at the Opera",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/anightattheopera.jpeg",
+            "length": "6:37"
         },
         {
             "song_name": "Ode to Viceroy",
             "artist": "Mac Demarco",
             "album": "2",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/mac2.png",
+            "length": "3:14"
         },
         {
             "song_name": "Elephant",
             "artist": "Tame Impala",
             "album": "Lonerism",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/lonerism.jpeg",
+            "length": "3:57"
         },
         {
             "song_name": "You Only Live Once",
             "artist": "The Strokes",
             "album": "First Impressions of Earth",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/firstimpressionofearth.jpeg",
+            "length": "3:35"
         },
         {
             "song_name": "R U Mine?",
             "artist": "Arctic Monkeys",
             "album": "AM",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/am.jpeg",
+            "length": "4:15"
         },
         {
             "song_name": "Say It Ain't So",
             "artist": "Weezer",
             "album": "Weezer (Blue Album)",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/bluealbum.png",
+            "length": "3:48"
         },
         {
             "song_name": "New Person, Same Old Mistakes",
             "artist": "Tame Impala",
             "album": "Currents",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/currents.png",
+            "length": "6:02"
         },
         {
             "song_name": "Where I End and You Begin",
             "artist": "Radiohead",
             "album": "Hail to the Thief",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/hailtothethief.png",
+            "length": "3:03"
         },
         {
             "song_name": "Last Nite",
             "artist": "The Strokes",
             "album": "Is This It?",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/isthisit.jpg",
+            "length": "2:48"
         },
         {
             "song_name": "Salad Days",
             "artist": "Mac DeMarco",
             "album": "Salad Days",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/saladdays.png",
+            "length": "2:35"
         },
         {
             "song_name": "Is it True",
             "artist": "Tame Impala",
             "album": "The Slow Rush",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/theslowrush.png",
+            "length": "3:32"
         },
         {
             "song_name": "Paranoid Android",
             "artist": "Radiohead",
             "album": "OK Computer",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/okcomputer.png",
+            "length": "5:21"
         },
         {
             "song_name": "El Scorcho",
             "artist": "Weezer",
             "album": "Pinkerton",
-            "cover_art": "/assets/placeholder.jpeg"
+            "cover_art": "/assets/album-covers/pinkerton.jpeg",
+            "length": "4:02"
         }
     ]
 }

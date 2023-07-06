@@ -1,0 +1,136 @@
+.center {
+    text-align: center;
+}
+
+.searchBar {
+    width: 40%;
+    height: 30px;
+    font-size: 18px;
+
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.searchDropdown {
+    height: 30px;
+    width: 100px;
+    margin-right: 10px;
+
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 300px 300px 300px 300px;
+    padding: 10px;
+    width: 90%;
+}
+
+.grid-item {
+    // border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    // font-size: 30px;
+    text-align: center;
+}
+
+.grid-item:hover {
+    background-color: rgb(229, 229, 229);
+    cursor: pointer;
+    // transition: all 0.1s ease;
+}
+
+.center-div {
+    justify-content: center;
+    display: flex;
+}
+
+.song-data {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+    margin-bottom: 10px;
+}
+
+.row:hover {
+    background-color: rgb(229, 229, 229);
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.col {
+    float: left;
+    // width: 30%;
+    height: 100%;
+    display: table;
+}
+
+.sub-col {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.all-songs {
+    height: 80%;
+    width: 80%;
+    overflow: scroll;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.confirmation-modal {
+    position: fixed;
+    height: 60%;
+    width: 40%;
+    top: 50%;
+    left: 50%;
+    background-color: white;
+    // border: 10px solid rgb(232, 232, 232);
+    border-radius: 20px;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+
+    -moz-box-shadow: 0 0 3px #ccc;
+    -webkit-box-shadow: 0 0 3px #ccc;
+    box-shadow: 0 0 10px #ccc;
+}
+
+.modal-content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    // height: 100%;
+}
+
+.modal-title {
+    font-family: "Domine-Bold", sans-serif;
+}
+
+.blur-background_in {
+    filter: blur(20px);
+    -webkit-filter: blur(20px);
+    -o-filter: blur(20px);
+    -moz-filter: blur(20px);
+
+    pointer-events: none;
+
+    // transition: all 0.1s ease-in;
+    // -webkit-transition: all 0.1s ease-in;
+    // -o-transition: all 0.1s ease-in;
+    // -moz-transition: all 0.1s ease-in;
+}

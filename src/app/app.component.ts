@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Song } from './song-model';
+import { SpotifyService } from './spotify/spotify.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ export class AppComponent implements OnInit{
   total_songs: Song[] = [];
 
   constructor(
-    private httpClient: HttpClient
+    private spotifyService: SpotifyService
   ){}
 
   async ngOnInit(): Promise<void> {
@@ -22,18 +23,22 @@ export class AppComponent implements OnInit{
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
   
-    if (!code) {
-      redirectToAuthCodeFlow(clientId);
-    } else {
-        const accessToken =  await getAccessToken(clientId, code);
-        const profile = await fetchProfile(accessToken);
+    // if (!code) {
+    //   redirectToAuthCodeFlow(clientId);
+    // } else {
+    //     const accessToken =  await getAccessToken(clientId, code);
+    //     const profile = await fetchProfile(accessToken);
+    //     console.log(profile);
 
-        const songJSONData= await this.httpClient.get('assets/spotify-simulation-data.json', { responseType: 'json' }).toPromise();
-        const songs: Song[] = songJSONData['data'];
-        this.total_songs = songs;
+    //     const songJSONData= await this.httpClient.get('assets/spotify-simulation-data.json', { responseType: 'json' }).toPromise();
+    //     const songs: Song[] = songJSONData['data'];
+    //     this.total_songs = songs;
     
-        console.log('DATA: ', songs);
+    //     console.log('DATA: ', songs);
     
+    //     //I don't think we need this in the final version, but it'll be useful to see if the login is working
+    //     //populateUI(profile);
+    // }
         //I don't think we need this in the final version, but it'll be useful to see if the login is working
         //populateUI(profile);
 
@@ -46,74 +51,74 @@ export class AppComponent implements OnInit{
 
 //I was getting errors when I was putting this in the Init function, unsure if it is supposed to go here
 //Redirect the user to the Spotify authorization page based on their clientID
-export async function redirectToAuthCodeFlow(clientId: string) {
-    const verifier = generateCodeVerifier(128);
-    const challenge = await generateCodeChallenge(verifier);
+// export async function redirectToAuthCodeFlow(clientId: string) {
+//     const verifier = generateCodeVerifier(128);
+//     const challenge = await generateCodeChallenge(verifier);
 
-    localStorage.setItem("verifier", verifier);
+//     localStorage.setItem("verifier", verifier);
 
-    const params = new URLSearchParams();
-    //this will be generated after we register the app
-    params.append("client_id", clientId);
-    params.append("response_type", "code");
-    //this URI needs to be added into the list on the Spotify Dev page, this is where they will be redirected after loggin in
-    params.append("redirect_uri", "http://localhost:4200/callback");
-    params.append("scope", "user-read-private user-read-email");
-    params.append("code_challenge_method", "S256");
-    params.append("code_challenge", challenge);
+//     const params = new URLSearchParams();
+//     //this will be generated after we register the app
+//     params.append("client_id", clientId);
+//     params.append("response_type", "code");
+//     //this URI needs to be added into the list on the Spotify Dev page, this is where they will be redirected after loggin in
+//     params.append("redirect_uri", "http://localhost:4200/callback");
+//     params.append("scope", "user-read-private user-read-email");
+//     params.append("code_challenge_method", "S256");
+//     params.append("code_challenge", challenge);
 
-    document.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
-}
+//     document.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
+// }
 
 //This is the PKCE Authorization
-function generateCodeVerifier(length: number) {
-  let text = '';
-  let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+// function generateCodeVerifier(length: number) {
+//   let text = '';
+//   let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-  for (let i = 0; i < length; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
-}
+//   for (let i = 0; i < length; i++) {
+//       text += possible.charAt(Math.floor(Math.random() * possible.length));
+//   }
+//   return text;
+// }
 
-async function generateCodeChallenge(codeVerifier: string) {
-  const data = new TextEncoder().encode(codeVerifier);
-  const digest = await window.crypto.subtle.digest('SHA-256', data);
-  return btoa(String.fromCharCode.apply(null, [...new Uint8Array(digest)]))
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
-}
+// async function generateCodeChallenge(codeVerifier: string) {
+//   const data = new TextEncoder().encode(codeVerifier);
+//   const digest = await window.crypto.subtle.digest('SHA-256', data);
+//   return btoa(String.fromCharCode.apply(null, [...new Uint8Array(digest)]))
+//       .replace(/\+/g, '-')
+//       .replace(/\//g, '_')
+//       .replace(/=+$/, '');
+// }
 
 //Load the verifier from local storage to perform a POST to the Spotify token API to make sure the token exchange works
-export async function getAccessToken(clientId: string, code: string): Promise<string> {
-  const verifier = localStorage.getItem("verifier");
+// export async function getAccessToken(clientId: string, code: string): Promise<string> {
+//   const verifier = localStorage.getItem("verifier");
 
-  const params = new URLSearchParams();
-  params.append("client_id", clientId);
-  params.append("grant_type", "authorization_code");
-  params.append("code", code);
-  params.append("redirect_uri", "http://localhost:4200/callback");
-  params.append("code_verifier", verifier!);
+//   const params = new URLSearchParams();
+//   params.append("client_id", clientId);
+//   params.append("grant_type", "authorization_code");
+//   params.append("code", code);
+//   params.append("redirect_uri", "http://localhost:4200/callback");
+//   params.append("code_verifier", verifier!);
 
-  const result = await fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params
-  });
+//   const result = await fetch("https://accounts.spotify.com/api/token", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+//       body: params
+//   });
 
-  const { access_token } = await result.json();
-  return access_token;
-}
+//   const { access_token } = await result.json();
+//   return access_token;
+// }
 
 //call the Web API to get the user's data
-async function fetchProfile(token: string): Promise<UserProfile> {
-  const result = await fetch("https://api.spotify.com/v1/me", {
-      method: "GET", headers: { Authorization: `Bearer ${token}` }
-  });
+// async function fetchProfile(token: string): Promise<UserProfile> {
+//   const result = await fetch("https://api.spotify.com/v1/me", {
+//       method: "GET", headers: { Authorization: `Bearer ${token}` }
+//   });
 
-  return await result.json();
-}
+//   return await result.json();
+// }
 
 /*
 Use the DOM to find HTML elemtns and update them with the user's profile data (Look at https://developer.spotify.com/documentation/web-api/howtos/web-app-profile for html code)
@@ -154,8 +159,8 @@ interface UserProfile {
   uri: string;
 }
 
-interface Image {
-  url: string;
-  height: number;
-  width: number;
-}
+// interface Image {
+//   url: string;
+//   height: number;
+//   width: number;
+// }
