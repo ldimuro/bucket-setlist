@@ -35,20 +35,20 @@ export class SpotifyService {
       return profile;
 
       //I don't think we need this in the final version, but it'll be useful to see if the login is working
-      
+
     }
   }
 
-  async callSpotifySearch(token: string, searchVal: string, filterVal: string): Promise<any> {
+  async callSpotifySearch(token: string, searchVal: string, filterVal: string): Promise<SearchResult> {
     // const artistURL: string = "https://api.spotify.com/v1/artists/3IunaFjvNKj98JW89JYv9u?si=j4I2XSTxTw6JQMjM3dbe6w";
     const searchURL: string = `https://api.spotify.com/v1/search?q=${searchVal}&type=${filterVal}`;
-  
+
     const result = await fetch(searchURL, {
-        method: "GET", headers: { Authorization: `Bearer ${token}`}
+      method: "GET", headers: { Authorization: `Bearer ${token}` }
     });
-  
+
     return await result.json();
-  
+
     //const { access_token } = await result.json();
     //return access_token;
   }
@@ -98,7 +98,7 @@ async function corsAccess() {
   headers = headers.set('content-type', 'application/json')
   headers = headers.set('Access-Control-Allow-Origin', '*');
   console.log(headers);
-  return this.HttpClient.get("http://localhost:4200", {'headers': headers});
+  return this.HttpClient.get("http://localhost:4200", { 'headers': headers });
 }
 
 
@@ -180,8 +180,8 @@ interface UserProfile {
   display_name: string;
   email: string;
   explicit_content: {
-      filter_enabled: boolean,
-      filter_locked: boolean
+    filter_enabled: boolean,
+    filter_locked: boolean
   },
   external_urls: { spotify: string; };
   followers: { href: string; total: number; };
@@ -189,6 +189,71 @@ interface UserProfile {
   id: string;
   images: Image[];
   product: string;
+  type: string;
+  uri: string;
+}
+
+interface SearchResult {
+  tracks: {
+    href: string;
+    items: Track[];
+    limit: number;
+    next: string;
+    offset: number;
+    previous: string;
+    total: number;
+  }
+}
+
+interface Track {
+  album: Album;
+  artists: Artist[];
+  available_markets: any[];
+  disc_number: number;
+  duration_ms: number;
+  explicit: boolean;
+  external_ids: {
+    isrc: string;
+  };
+  external_urls: {
+    spotify: string;
+  };
+  href: string;
+  id: string;
+  is_local: boolean;
+  name: string;
+  popularity: number;
+  preview_url: string;
+  track_number: number;
+  type: string;
+  uri: string;
+}
+
+interface Album {
+  album_type: string;
+  artists: Artist[];
+  available_markets: any[];
+  external_urls: {
+    spotify: string;
+  };
+  href: string;
+  id: string;
+  images: Image[];
+  name: string;
+  release_date: string;
+  release_date_precision: string;
+  total_tracks: number;
+  type: string;
+  uri: string;
+}
+
+interface Artist {
+  external_urls: {
+    spotify: string;
+  };
+  href: string;
+  id: string;
+  name: string;
   type: string;
   uri: string;
 }
@@ -205,19 +270,19 @@ interface Image {
 
 function populateUI(profile: UserProfile) {
   console.log(profile);
-// document.getElementById("displayName")!.innerText = profile.display_name;
-// if (profile.images[0]) {
-//     const profileImage = new Image(200, 200);
-//     profileImage.src = profile.images[0].url;
-//     document.getElementById("avatar")!.appendChild(profileImage);
-// }
-// document.getElementById("id")!.innerText = profile.id;
-// document.getElementById("email")!.innerText = profile.email;
-// document.getElementById("uri")!.innerText = profile.uri;
-// document.getElementById("uri")!.setAttribute("href", profile.external_urls.spotify);
-// document.getElementById("url")!.innerText = profile.href;
-// document.getElementById("url")!.setAttribute("href", profile.href);
-// document.getElementById("imgUrl")!.innerText = profile.images[0]?.url ?? '(no profile image)';
+  // document.getElementById("displayName")!.innerText = profile.display_name;
+  // if (profile.images[0]) {
+  //     const profileImage = new Image(200, 200);
+  //     profileImage.src = profile.images[0].url;
+  //     document.getElementById("avatar")!.appendChild(profileImage);
+  // }
+  // document.getElementById("id")!.innerText = profile.id;
+  // document.getElementById("email")!.innerText = profile.email;
+  // document.getElementById("uri")!.innerText = profile.uri;
+  // document.getElementById("uri")!.setAttribute("href", profile.external_urls.spotify);
+  // document.getElementById("url")!.innerText = profile.href;
+  // document.getElementById("url")!.setAttribute("href", profile.href);
+  // document.getElementById("imgUrl")!.innerText = profile.images[0]?.url ?? '(no profile image)';
 }
 
 //#endregion

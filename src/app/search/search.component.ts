@@ -34,8 +34,9 @@ export class SearchComponent implements OnInit {
   }
 
   searchButtonClicked() {
-    const search_result = this.spotifyService.callSpotifySearch(this.spotifyService.getAccessToken(), this.search_val, this.filter_val);
-    console.log(search_result);
+    const search_result = this.spotifyService.callSpotifySearch(this.spotifyService.getAccessToken(), this.search_val, this.filter_val).then(val => {
+      console.log(val);
+    });
   }
 
   songClicked(song: any) {
