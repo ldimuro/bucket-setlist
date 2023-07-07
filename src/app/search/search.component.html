@@ -6,17 +6,21 @@
     <br>
 
     <div class="center" style="margin-bottom: 20px;">
-        <select class="searchDropdown" name="searchDropdown" id="searchDropdown" [(ngModel)]="filter_val">
-            <option value="track" selected>Song</option>
-            <option value="artist">Artist</option>
-            <option value="album">Album</option>
-        </select>
-        <input class="searchBar" placeholder="Enter a song/artist/album/etc." [(ngModel)]="search_val">
-        <button (click)="searchButtonClicked()">Find</button>
+        <form #seach="ngForm" (ngSubmit)="searchButtonClicked()">
+            <select class="searchDropdown" name="searchDropdown" id="searchDropdown" [(ngModel)]="filter_val">
+                <option value="track" selected>Song</option>
+                <option value="artist">Artist</option>
+                <option value="album">Album</option>
+            </select>
+            <input class="searchBar" placeholder="Enter a song/artist/album/etc." name="searchBar" [(ngModel)]="search_val">
+            <input type="Submit" value="Find" style="padding: 5px 20px 5px 20px; margin-left: 10px;">
+        </form>
+        
+        <!-- <button (click)="searchButtonClicked()">Find</button> -->
     </div>
 
     <!-- Song Table -->
-    <div class="all-songs">
+    <div *ngIf="total_songs.length > 0" class="all-songs">
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -29,7 +33,7 @@
             <tbody>
                 <tr *ngFor="let song of total_songs" (click)="songClicked(song)">
                     <td style="min-width:75px;"><img style="border-radius: 7px;" src="{{song.cover_art}}" width="50px" height="50px"></td>
-                    <td style="min-width: 250px;">
+                    <td style="min-width: 350px; max-width: 500px">
                         {{song.song_name}}</td>
                     <td style="min-width: 250px;">
                         {{song.artist}}</td>

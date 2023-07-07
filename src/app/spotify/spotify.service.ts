@@ -41,7 +41,7 @@ export class SpotifyService {
 
   async callSpotifySearch(token: string, searchVal: string, filterVal: string): Promise<SearchResult> {
     // const artistURL: string = "https://api.spotify.com/v1/artists/3IunaFjvNKj98JW89JYv9u?si=j4I2XSTxTw6JQMjM3dbe6w";
-    const searchURL: string = `https://api.spotify.com/v1/search?q=${searchVal}&type=${filterVal}`;
+    const searchURL: string = `https://api.spotify.com/v1/search?q=${searchVal}&type=${filterVal}&limit=50`;
 
     const result = await fetch(searchURL, {
       method: "GET", headers: { Authorization: `Bearer ${token}` }

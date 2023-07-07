@@ -26,16 +26,59 @@ export class SearchComponent implements OnInit {
   async ngOnInit() {
     const songJSONData = await this.httpClient.get('assets/spotify-simulation-data.json', { responseType: 'json' }).toPromise();
     const songs: Song[] = songJSONData['data'];
-    this.total_songs = songs;
+    // this.total_songs = songs;
 
-    console.log('DATA: ', songs);
+    // console.log('DATA: ', songs);
 
     
   }
 
   searchButtonClicked() {
-    const search_result = this.spotifyService.callSpotifySearch(this.spotifyService.getAccessToken(), this.search_val, this.filter_val).then(val => {
+    this.total_songs = [];
+
+    let search_result;
+    this.spotifyService.callSpotifySearch(this.spotifyService.getAccessToken(), this.search_val, this.filter_val).then(val => {
       console.log(val);
+      search_result = val;
+
+      // Parse Tracks
+      if (search_result['tracks']) {
+        search_result['tracks']['items'].forEach(track => {
+          this.total_songs.push({
+            song_name: track['name'],
+            artist: track['artists'][0]['name'],
+            album: track['album']['name'],
+            cover_art: track['album']['images'][0]['url'],
+            length: track['duration_ms']
+          });
+        });
+      }
+
+      // Parse Artists
+      if (search_result['artists']) {
+        search_result['artists']['items'].forEach(track => {
+          this.total_songs.push({
+            song_name: track['name'],
+            artist: track['artists'][0]['name'],
+            album: track['album']['name'],
+            cover_art: track['album']['images'][0]['url'],
+            length: track['duration_ms']
+          });
+        });
+      }
+
+      // Parse Albums
+      if (search_result['albums']) {
+        search_result['albums']['items'].forEach(track => {
+          this.total_songs.push({
+            song_name: track['name'],
+            artist: track['artists'][0]['name'],
+            album: track['album']['name'],
+            cover_art: track['album']['images'][0]['url'],
+            length: track['duration_ms']
+          });
+        });
+      }
     });
   }
 
