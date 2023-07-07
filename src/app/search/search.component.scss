@@ -134,3 +134,26 @@
     // -o-transition: all 0.1s ease-in;
     // -moz-transition: all 0.1s ease-in;
 }
+
+table,
+th {
+    // border: 1px solid grey;
+    // border-collapse: collapse;
+    // padding: 5px;
+
+    border: none;
+    border-spacing: 0;
+}
+
+th {
+    text-align: left;
+}
+
+// table tr:hover {
+//     background-color: aqua;
+// }
+
+tr:hover {
+    background-color: lightblue;
+    cursor: pointer;
+}
