@@ -11,8 +11,10 @@
             <option value="artist">Artist</option>
             <option value="album">Album</option>
         </select>
-        <input class="searchBar" placeholder="Enter a song/artist/album/etc.">
+        <input class="searchBar" placeholder="Enter a song/artist/album/etc." [(ngModel)]="searchVal">
     </div>
+
+    {{searchVal}}
 
     <div class="all-songs">
         <div *ngIf="total_songs" class="rows">

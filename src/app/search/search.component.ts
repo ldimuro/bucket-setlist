@@ -13,6 +13,7 @@ export class SearchComponent implements OnInit {
   total_songs: Song[] = [];
   confirmation_modal_open = false;
   selected_song;
+  searchVal;
 
   constructor(
     private httpClient: HttpClient,
