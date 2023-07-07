@@ -21,35 +21,49 @@ export class SpotifyService {
       redirectToAuthCodeFlow(clientId);
     } else {
       const accessToken = await getAccessToken(clientId, code);
-      this.accessToken = accessToken;
+      this.setAccessToken(accessToken);
+
       const profile = await fetchProfile(accessToken);
 
       //corsAccess();
 
-      const searchValue = callSpotifySearch(accessToken, 'indexical reminder');
-      console.log(searchValue);
+      // const searchValue = this.callSpotifySearch(accessToken, 'indexical reminder');
+      // console.log(searchValue);
+
+      populateUI(profile);
 
       return profile;
 
       //I don't think we need this in the final version, but it'll be useful to see if the login is working
-      //populateUI(profile);
+      
     }
+  }
+
+  async callSpotifySearch(token: string, searchVal: string, filterVal: string): Promise<any> {
+    // const artistURL: string = "https://api.spotify.com/v1/artists/3IunaFjvNKj98JW89JYv9u?si=j4I2XSTxTw6JQMjM3dbe6w";
+    const searchURL: string = `https://api.spotify.com/v1/search?q=${searchVal}&type=${filterVal}`;
+  
+    const result = await fetch(searchURL, {
+        method: "GET", headers: { Authorization: `Bearer ${token}`}
+    });
+  
+    return await result.json();
+  
+    //const { access_token } = await result.json();
+    //return access_token;
+  }
+
+  getAccessToken() {
+    return this.accessToken;
+  }
+
+  setAccessToken(token: any) {
+    this.accessToken = token;
   }
 }
 
-async function callSpotifySearch(token: string, searchVal: string): Promise<any> {
-  // const artistURL: string = "https://api.spotify.com/v1/artists/3IunaFjvNKj98JW89JYv9u?si=j4I2XSTxTw6JQMjM3dbe6w";
-  const searchURL: string = `https://api.spotify.com/v1/search?q=${searchVal}&type=album,track,artist`;
 
-  const result = await fetch(searchURL, {
-      method: "GET", headers: { Authorization: `Bearer ${token}`}
-  });
 
-  return await result.json();
-
-  //const { access_token } = await result.json();
-  //return access_token;
-}
 
 async function corsAccess() {
   /*
@@ -179,31 +193,33 @@ interface UserProfile {
   uri: string;
 }
 
+
 interface Image {
   url: string;
   height: number;
   width: number;
 }
 
-/*
-Use the DOM to find HTML elemtns and update them with the user's profile data (Look at https://developer.spotify.com/documentation/web-api/howtos/web-app-profile for html code)
+
+// Use the DOM to find HTML elemtns and update them with the user's profile data (Look at https://developer.spotify.com/documentation/web-api/howtos/web-app-profile for html code)
 
 function populateUI(profile: UserProfile) {
-document.getElementById("displayName")!.innerText = profile.display_name;
-if (profile.images[0]) {
-    const profileImage = new Image(200, 200);
-    profileImage.src = profile.images[0].url;
-    document.getElementById("avatar")!.appendChild(profileImage);
+  console.log(profile);
+// document.getElementById("displayName")!.innerText = profile.display_name;
+// if (profile.images[0]) {
+//     const profileImage = new Image(200, 200);
+//     profileImage.src = profile.images[0].url;
+//     document.getElementById("avatar")!.appendChild(profileImage);
+// }
+// document.getElementById("id")!.innerText = profile.id;
+// document.getElementById("email")!.innerText = profile.email;
+// document.getElementById("uri")!.innerText = profile.uri;
+// document.getElementById("uri")!.setAttribute("href", profile.external_urls.spotify);
+// document.getElementById("url")!.innerText = profile.href;
+// document.getElementById("url")!.setAttribute("href", profile.href);
+// document.getElementById("imgUrl")!.innerText = profile.images[0]?.url ?? '(no profile image)';
 }
-document.getElementById("id")!.innerText = profile.id;
-document.getElementById("email")!.innerText = profile.email;
-document.getElementById("uri")!.innerText = profile.uri;
-document.getElementById("uri")!.setAttribute("href", profile.external_urls.spotify);
-document.getElementById("url")!.innerText = profile.href;
-document.getElementById("url")!.setAttribute("href", profile.href);
-document.getElementById("imgUrl")!.innerText = profile.images[0]?.url ?? '(no profile image)';
-}
-*/
+
 //#endregion
 
 //#region SPOTIFY SEARCH FEATURE

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Song } from '../song-model';
 import { Router } from '@angular/router';
+import { SpotifyService } from '../spotify/spotify.service';
 
 @Component({
   selector: 'app-search',
@@ -13,11 +14,13 @@ export class SearchComponent implements OnInit {
   total_songs: Song[] = [];
   confirmation_modal_open = false;
   selected_song;
-  searchVal;
+  search_val;
+  filter_val = 'track';
 
   constructor(
     private httpClient: HttpClient,
-    private router: Router
+    private router: Router,
+    private spotifyService: SpotifyService
   ) { }
 
   async ngOnInit() {
@@ -28,6 +31,11 @@ export class SearchComponent implements OnInit {
     console.log('DATA: ', songs);
 
     
+  }
+
+  searchButtonClicked() {
+    const search_result = this.spotifyService.callSpotifySearch(this.spotifyService.getAccessToken(), this.search_val, this.filter_val);
+    console.log(search_result);
   }
 
   songClicked(song: any) {

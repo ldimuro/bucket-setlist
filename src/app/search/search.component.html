@@ -6,15 +6,14 @@
     <br>
 
     <div class="center" style="margin-bottom: 20px;">
-        <select class="searchDropdown" name="searchDropdown" id="searchDropdown">
-            <option value="song">Song</option>
+        <select class="searchDropdown" name="searchDropdown" id="searchDropdown" [(ngModel)]="filter_val">
+            <option value="track" selected>Song</option>
             <option value="artist">Artist</option>
             <option value="album">Album</option>
         </select>
-        <input class="searchBar" placeholder="Enter a song/artist/album/etc." [(ngModel)]="searchVal">
+        <input class="searchBar" placeholder="Enter a song/artist/album/etc." [(ngModel)]="search_val">
+        <button (click)="searchButtonClicked()">Find</button>
     </div>
-
-    {{searchVal}}
 
     <div class="all-songs">
         <div *ngIf="total_songs" class="rows">
