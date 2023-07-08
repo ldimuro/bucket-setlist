@@ -7,13 +7,15 @@ import { HomeComponent } from './home/home.component';
 import { ArtistComponent } from './artist/artist.component';
 import { SearchComponent } from './search/search.component';
 import { FormsModule } from '@angular/forms';
+import { TrackConfirmationComponent } from './track-confirmation/track-confirmation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     ArtistComponent,
-    SearchComponent
+    SearchComponent,
+    TrackConfirmationComponent
   ],
   imports: [
     BrowserModule,

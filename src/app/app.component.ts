@@ -19,7 +19,6 @@ export class AppComponent implements OnInit{
   async ngOnInit(): Promise<void> {
 
     const profile = this.spotifyService.authorizeSpotifyProfile();
-    console.log('PROFILE: ', profile);
     
   }
 }

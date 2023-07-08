@@ -80,7 +80,7 @@ export class SearchComponent implements OnInit {
           this.total_artists.push(obj);
         });
 
-        console.log(this.total_artists);
+        // console.log(this.total_artists);
       }
 
       // Parse Albums
