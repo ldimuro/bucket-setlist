@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Song } from '../song-model';
+import { Artist, Song } from '../song-model';
 import { Router } from '@angular/router';
 import { SpotifyService } from '../spotify/spotify.service';
 
@@ -11,13 +11,15 @@ import { SpotifyService } from '../spotify/spotify.service';
 })
 export class SearchComponent implements OnInit {
 
-  total_songs: Song[] = [];
+  total_songs/*: Song[]*/ = [];
+  total_artists/*: Artist[]*/ = [];
   confirmation_modal_open = false;
   selected_song;
   search_val;
   filter_val = 'track';
   is_audio_playing: boolean = false;
   audio_player;
+  testing = 'track';
 
   constructor(
     private httpClient: HttpClient,
@@ -38,6 +40,7 @@ export class SearchComponent implements OnInit {
 
   searchButtonClicked() {
     this.total_songs = [];
+    this.total_artists = [];
 
     let search_result;
     this.spotifyService.callSpotifySearch(this.spotifyService.getAccessToken(), this.search_val, this.filter_val).then(val => {
@@ -60,15 +63,24 @@ export class SearchComponent implements OnInit {
 
       // Parse Artists
       if (search_result['artists']) {
-        search_result['artists']['items'].forEach(track => {
-          // this.total_songs.push({
-          //   song_name: track['name'],
-          //   artist: track['artists'][0]['name'],
-          //   album: track['album']['name'],
-          //   cover_art: track['album']['images'][0]['url'],
-          //   length: track['duration_ms']
-          // });
+        search_result['artists']['items'].forEach(artist => {
+          let obj: Artist = {
+            artist_name: artist['name'],
+            id: artist['id']
+          }
+
+          // If Artist does not have an associated profile image, use placeholder
+          if (artist['images'].length > 0) {
+            obj.profile_image = artist['images'][0]['url'];
+          }
+          else {
+            obj.profile_image = '/assets/placeholder.jpeg';
+          }
+
+          this.total_artists.push(obj);
         });
+
+        console.log(this.total_artists);
       }
 
       // Parse Albums
@@ -92,8 +104,11 @@ export class SearchComponent implements OnInit {
     this.confirmation_modal_open = true;
 
     document.getElementById(`searchComponent`).classList.add('blur-background_in');
+  }
 
-
+  artistClicked(artist: Artist) {
+    this.spotifyService.toArtistPage.next(artist);
+    this.router.navigate(['/artist']);
   }
 
   /**

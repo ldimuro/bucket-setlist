@@ -79,7 +79,7 @@
     vertical-align: middle;
 }
 
-.all-songs {
+.all-search-content {
     height: 80%;
     width: 80%;
     overflow: scroll;
@@ -160,7 +160,15 @@ tr:hover {
     cursor: pointer;
 }
 
-.songPreview:hover {
+.song-preview:hover, .artist-profile:hover {
     opacity: 0.5;
     cursor: pointer;
+}
+
+.image-grid {
+    display: grid;
+    grid-gap: 10px;
+    // grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    width: 80%;
 }

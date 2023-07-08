@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import { Injectable } from '@angular/core';
 export class SpotifyService {
 
   accessToken;
+  toArtistPage = new BehaviorSubject(undefined); 
 
   constructor(public http: HttpClient) { }
 
@@ -40,7 +42,6 @@ export class SpotifyService {
   }
 
   async callSpotifySearch(token: string, searchVal: string, filterVal: string): Promise<SearchResult> {
-    // const artistURL: string = "https://api.spotify.com/v1/artists/3IunaFjvNKj98JW89JYv9u?si=j4I2XSTxTw6JQMjM3dbe6w";
     const searchURL: string = `https://api.spotify.com/v1/search?q=${searchVal}&type=${filterVal}&limit=50`;
 
     const result = await fetch(searchURL, {
@@ -48,9 +49,24 @@ export class SpotifyService {
     });
 
     return await result.json();
+  }
 
-    //const { access_token } = await result.json();
-    //return access_token;
+  async getAlbumsOfArtist(token: string, artist_id: string) {
+    const albumsURL: string = `https://api.spotify.com/v1/artists/${artist_id}/albums?include_groups=album,single&limit=50`;
+    const result = await fetch(albumsURL, {
+      method: "GET", headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return await result.json();
+  }
+
+  async getTracksOfAlbum(token: string, album_id: string) {
+    const albumsURL: string = `https://api.spotify.com/v1/albums/${album_id}/tracks`;
+    const result = await fetch(albumsURL, {
+      method: "GET", headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return await result.json();
   }
 
   getAccessToken() {
