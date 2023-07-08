@@ -16,6 +16,8 @@ export class SearchComponent implements OnInit {
   selected_song;
   search_val;
   filter_val = 'track';
+  is_audio_playing: boolean = false;
+  audio_player;
 
   constructor(
     private httpClient: HttpClient,
@@ -30,7 +32,8 @@ export class SearchComponent implements OnInit {
 
     // console.log('DATA: ', songs);
 
-    
+    this.audio_player = new Audio();
+
   }
 
   searchButtonClicked() {
@@ -49,7 +52,8 @@ export class SearchComponent implements OnInit {
             artist: track['artists'][0]['name'],
             album: track['album']['name'],
             cover_art: track['album']['images'][0]['url'],
-            length: track['duration_ms']
+            length: track['duration_ms'],
+            preview_audio: track['preview_url']
           });
         });
       }
@@ -57,26 +61,26 @@ export class SearchComponent implements OnInit {
       // Parse Artists
       if (search_result['artists']) {
         search_result['artists']['items'].forEach(track => {
-          this.total_songs.push({
-            song_name: track['name'],
-            artist: track['artists'][0]['name'],
-            album: track['album']['name'],
-            cover_art: track['album']['images'][0]['url'],
-            length: track['duration_ms']
-          });
+          // this.total_songs.push({
+          //   song_name: track['name'],
+          //   artist: track['artists'][0]['name'],
+          //   album: track['album']['name'],
+          //   cover_art: track['album']['images'][0]['url'],
+          //   length: track['duration_ms']
+          // });
         });
       }
 
       // Parse Albums
       if (search_result['albums']) {
         search_result['albums']['items'].forEach(track => {
-          this.total_songs.push({
-            song_name: track['name'],
-            artist: track['artists'][0]['name'],
-            album: track['album']['name'],
-            cover_art: track['album']['images'][0]['url'],
-            length: track['duration_ms']
-          });
+          // this.total_songs.push({
+          //   song_name: track['name'],
+          //   artist: track['artists'][0]['name'],
+          //   album: track['album']['name'],
+          //   cover_art: track['album']['images'][0]['url'],
+          //   length: track['duration_ms']
+          // });
         });
       }
     });
@@ -89,14 +93,40 @@ export class SearchComponent implements OnInit {
 
     document.getElementById(`searchComponent`).classList.add('blur-background_in');
 
-    
+
   }
+
+  /**
+   *  SONG CONFIRMATION MODAL FUNCTIONS
+   */
 
   // If user accepts the song, take them to main Bucket Setlist page
   confirmSong() {
     document.getElementById(`searchComponent`).classList.remove('blur-background_in');
     this.router.navigate(['/home']);
 
+  }
+
+  // Click to play a 30 second sample of track, click again to stop
+  playPreviewAudio(audio_file: any) {
+    if (audio_file) {
+      if (!this.is_audio_playing) {
+        this.audio_player.src = audio_file;
+        this.audio_player.load();
+        this.audio_player.play();
+        this.is_audio_playing = true;
+      }
+      else {
+        this.audio_player.pause();
+        this.audio_player.currentTime = 0;
+        this.is_audio_playing = false;
+      }
+
+      this.audio_player.addEventListener('ended', () => {
+        this.audio_player.currentTime = 0;
+        this.is_audio_playing = false;
+      });
+    }
   }
 
   cancel() {

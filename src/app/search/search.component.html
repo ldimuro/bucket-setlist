@@ -12,10 +12,11 @@
                 <option value="artist">Artist</option>
                 <option value="album">Album</option>
             </select>
-            <input class="searchBar" placeholder="Enter a song/artist/album/etc." name="searchBar" [(ngModel)]="search_val">
+            <input class="searchBar" placeholder="Enter a song/artist/album/etc." name="searchBar"
+                [(ngModel)]="search_val">
             <input type="Submit" value="Find" style="padding: 5px 20px 5px 20px; margin-left: 10px;">
         </form>
-        
+
         <!-- <button (click)="searchButtonClicked()">Find</button> -->
     </div>
 
@@ -32,12 +33,13 @@
             </thead>
             <tbody>
                 <tr *ngFor="let song of total_songs" (click)="songClicked(song)">
-                    <td style="min-width:75px;"><img style="border-radius: 7px;" src="{{song.cover_art}}" width="50px" height="50px"></td>
-                    <td style="min-width: 350px; max-width: 500px">
+                    <td style="min-width:75px;"><img style="border-radius: 7px;" src="{{song.cover_art}}" width="60px"
+                            height="60px"></td>
+                    <td style="min-width: 350px; max-width: 350px">
                         {{song.song_name}}</td>
-                    <td style="min-width: 250px;">
+                    <td style="min-width: 300px; max-width: 300px;">
                         {{song.artist}}</td>
-                    <td style="min-width: 250px;">
+                    <td style="min-width: 300px; max-width: 300px;">
                         {{song.album}}</td>
                 </tr>
             </tbody>
@@ -49,7 +51,9 @@
 <div [hidden]="!confirmation_modal_open" class="modal confirmation-modal" id="confirmation-modal">
     <div class="modal-content">
         <div class="modal-title" style="font-size: 18px; width: 100%;">
-            <img style="border-radius: 10px;" src="{{selected_song?.cover_art}}" width="35%" height="35%" />
+            <img style="border-radius: 10px;" [ngClass]="selected_song?.preview_audio ? 'songPreview' : ''"
+                (click)="playPreviewAudio(selected_song?.preview_audio)" src="{{selected_song?.cover_art}}" width="35%"
+                height="35%"  />
 
             <br>
 

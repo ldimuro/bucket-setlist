@@ -4,4 +4,5 @@ export class Song {
     album: string;
     cover_art: any;
     length: number;
+    preview_audio: string;
 }
