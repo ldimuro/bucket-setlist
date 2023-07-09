@@ -1,10 +1,11 @@
-export class Song {
+export class Track {
     song_name: string;
-    artist: string;
+    artist?: string;
     album: string;
     cover_art: any;
-    length: number;
+    length: number | string;
     preview_audio: string;
+    id: string;
 }
 
 export class Artist {
@@ -16,7 +17,7 @@ export class Artist {
 export class Album {
     album_name: string;
     album_type: string;
-    artist: string;
+    artist?: string;
     id: string;
     cover_art?: string;
     release_date: string;

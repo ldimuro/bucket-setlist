@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BucketSetlistService } from '../bucket-setlist.service';
 import { first } from 'rxjs/operators';
+import { Track } from '../song-model';
 
 @Component({
   selector: 'app-track-confirmation',
@@ -10,9 +11,10 @@ import { first } from 'rxjs/operators';
 })
 export class TrackConfirmationComponent implements OnInit {
 
-  selected_track;
+  selected_track: Track;
   is_audio_playing: boolean = false;
   audio_player;
+  background_color;
 
   constructor(
     private router: Router,
@@ -23,8 +25,10 @@ export class TrackConfirmationComponent implements OnInit {
     this.audio_player = new Audio();
 
     this.mainSvc.toTrackConfirmationModal.subscribe(val => {
+      if (val) {
         this.selected_track = val;
-      });
+      }
+    });
   }
 
   // If user accepts the song, take them to main Bucket Setlist page

@@ -22,73 +22,22 @@
     border-width: 1px;
 }
 
-.grid-container {
-    display: grid;
-    grid-template-columns: 300px 300px 300px 300px;
-    padding: 10px;
-    width: 90%;
-}
-
-.grid-item {
-    // border: 1px solid rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    // font-size: 30px;
-    text-align: center;
-}
-
-.grid-item:hover {
-    background-color: rgb(229, 229, 229);
-    cursor: pointer;
-    // transition: all 0.1s ease;
-}
-
 .center-div {
     justify-content: center;
     display: flex;
 }
 
-.song-data {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-    margin-bottom: 10px;
-}
-
-.row:hover {
-    background-color: rgb(229, 229, 229);
-    cursor: pointer;
-    transition: all 0.5s ease;
-}
-
-.col {
-    float: left;
-    // width: 30%;
-    height: 100%;
-    display: table;
-}
-
-.sub-col {
-    display: table-cell;
-    vertical-align: middle;
-}
-
 .all-search-content {
     height: 80%;
-    width: 80%;
+    // width: 80%;
     overflow: scroll;
     // margin: 0 auto;
-    margin-left: auto;
-    margin-right: auto;
+    // margin-left: auto;
+    // margin-right: auto;
     display: flex;
     justify-content: center;
     font-family: Arial, Helvetica, sans-serif;
+    padding: 20px;
 }
 
 .blur-background_in {
@@ -115,21 +64,19 @@ th {
     border-spacing: 0;
 }
 
-th {
+.header {
     text-align: left;
-    border-bottom: 1pt solid black;
+    border-bottom: 0.5pt solid rgb(144, 144, 144);
+    font-weight: lighter;
+    color: #818181;
 }
 
-// table tr:hover {
-//     background-color: aqua;
-// }
-
-tr:hover {
-    background-color: lightblue;
+.tracks:hover {
+    background-color: rgb(223, 237, 255);
     cursor: pointer;
 }
 
-.song-preview:hover, .artist-profile:hover {
+.artist-profile:hover {
     opacity: 0.5;
     cursor: pointer;
 }
@@ -140,4 +87,10 @@ tr:hover {
     // grid-template-columns: 1fr 1fr;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     width: 80%;
+}
+
+.cover-art {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }

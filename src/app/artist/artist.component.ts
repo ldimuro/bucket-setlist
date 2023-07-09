@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SpotifyService } from '../spotify/spotify.service';
-import { Album, Artist } from '../song-model';
+import { Album, Artist, Track } from '../song-model';
 import { BucketSetlistService } from '../bucket-setlist.service';
 import { first } from 'rxjs/operators';
 
@@ -33,11 +33,15 @@ export class ArtistComponent implements OnInit {
             let obj: Album = {
               album_name: album.name,
               album_type: album.album_type,
-              artist: album.artists[0].name,
+              // artist: album.artists[0].name,
               id: album.id,
               release_date: album.release_date,
               release_date_precision: album.release_date_precision,
               total_tracks: album.total_tracks
+            }
+
+            if (album.artists.length > 1) {
+              console.log(album.artists);
             }
 
             // If Album does not have associated cover art, use placeholder
@@ -58,7 +62,7 @@ export class ArtistComponent implements OnInit {
             await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), album.id).then(val => {
               let tracks = [];
               val.items.forEach(track => {
-                let trackObj = {
+                let trackObj: Track = {
                   song_name: track.name,
                   artist: track.artists[0].name,
                   album: album.album_name,
@@ -67,6 +71,16 @@ export class ArtistComponent implements OnInit {
                   preview_audio: track.preview_url,
                   id: track.id
                 }
+
+                // Add all artists in a comma separated list
+                let artists = '';
+                track.artists.forEach((artist, index) => {
+                  artists += artist.name;
+                  if (index !== track.artists.length - 1) {
+                    artists += ', ';
+                  }
+                });
+                trackObj.artist = artists;
 
                 tracks.push(trackObj);
               })
@@ -83,15 +97,15 @@ export class ArtistComponent implements OnInit {
 
     // Clicking "Cancel" inside Track Confirmation Modal
     this.mainSvc.closeTrackConfirmationModal.subscribe(val => {
-        if (val) {
-          this.confirmation_modal_open = false;
+      if (val) {
+        this.confirmation_modal_open = false;
 
-          const artistComponent = document.getElementById(`artistComponent`);
-          if (artistComponent) {
-            artistComponent.classList.remove('blur-background_in');
-          }
+        const artistComponent = document.getElementById(`artistComponent`);
+        if (artistComponent) {
+          artistComponent.classList.remove('blur-background_in');
         }
-      });
+      }
+    });
   }
 
   trackClicked(track: any) {

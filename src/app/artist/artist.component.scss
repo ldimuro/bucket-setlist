@@ -2,6 +2,12 @@
     width: 100vw;
 }
 
+img {
+    border-radius: 10px;
+    -webkit-filter: drop-shadow(2px 2px 2px #666666);
+    filter: drop-shadow(2px 2px 2px #666666);
+}
+
 table,
 th {
     // border: 1px solid grey;
@@ -14,16 +20,19 @@ th {
 
 th {
     text-align: left;
-    border-bottom: 1pt solid black;
+    border-bottom: 0.5pt solid rgb(144, 144, 144);
+    color: #818181;
+    font-weight: lighter;
 }
 
 table {
     margin-top: 10px;
     margin-bottom: 50px;
+    width: 100%;
 }
 
-tr:hover {
-    background-color: lightblue;
+.tracks:hover {
+    background-color: rgb(223, 237, 255);
     cursor: pointer;
 }
 

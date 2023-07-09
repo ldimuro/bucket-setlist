@@ -7,10 +7,10 @@
         <div *ngFor="let album of albums">
 
             <div class="album-info">
-                <img src="{{album.cover_art}}" width="150px" height="150px">
+                <img src="{{album.cover_art}}" width="200px" height="200px">
                 <div>
-                    <h2 style="padding-left: 10px;">{{album.album_name}}</h2>
-                    <p style="padding-left: 10px;">{{album.release_date | date: longDate}}&nbsp; &#8226;
+                    <h2 style="padding-left: 20px;">{{album.album_name}}</h2>
+                    <p style="padding-left: 20px;">{{album.release_date | date: longDate}}&nbsp; &#8226;
                         &nbsp;{{album.total_tracks}} songs</p>
                 </div>
             </div>
@@ -21,16 +21,16 @@
                     <tr>
                         <th>Name</th>
                         <th>Artist</th>
-                        <th>Length</th>
+                        <th>&nbsp;&nbsp;&#9202;</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr style="height: 40px;" *ngFor="let track of album.tracks" (click)="trackClicked(track)">
-                        <td style="min-width: 400px; max-width: 400px">
+                    <tr style="height: 40px;" *ngFor="let track of album.tracks" (click)="trackClicked(track)" class="tracks">
+                        <td style="width: 45%">
                             {{track.song_name}}</td>
-                        <td style="min-width: 300px; max-width: 300px;">
+                        <td style="width: 45%">
                             {{track.artist}}</td>
-                        <td style="width: 50px;">{{track.length}}</td>
+                        <td style="width: 5%">{{track.length}}</td>
                     </tr>
                 </tbody>
             </table>

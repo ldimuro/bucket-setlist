@@ -1,7 +1,7 @@
 <div class="modal confirmation-modal">
     <div class="modal-content">
         <div class="modal-title" style="font-size: 18px; width: 100%;">
-            <img style="border-radius: 10px;" [ngClass]="selected_track?.preview_audio ? 'song-preview' : ''"
+            <img [ngClass]="selected_track?.preview_audio ? 'song-preview' : ''" id="cover_art"
                 (click)="playPreviewAudio(selected_track?.preview_audio)" src="{{selected_track?.cover_art}}" width="35%"
                 height="35%" />
 

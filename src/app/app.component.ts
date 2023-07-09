@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Song } from './song-model';
+import { Track } from './song-model';
 import { SpotifyService } from './spotify/spotify.service';
 
 @Component({
@@ -10,7 +10,6 @@ import { SpotifyService } from './spotify/spotify.service';
 })
 export class AppComponent implements OnInit{
   title = 'bucket-setlist';
-  total_songs: Song[] = [];
 
   constructor(
     private spotifyService: SpotifyService

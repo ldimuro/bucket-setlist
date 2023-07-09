@@ -1,7 +1,14 @@
 .main {
     font-family: Arial, Helvetica, sans-serif;
+    height: 100vh;
 }
 
 .center {
     text-align: center;
+}
+
+img {
+    border-radius: 10px;
+    -webkit-filter: drop-shadow(2px 2px 2px #666666);
+    filter: drop-shadow(2px 2px 2px #666666);
 }
