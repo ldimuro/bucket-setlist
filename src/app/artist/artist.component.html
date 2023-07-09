@@ -1,4 +1,4 @@
-<div class="main">
+<div id="artistComponent" class="main">
     <h1 class="header">{{artist.artist_name}}</h1>
 
     <br>
@@ -25,7 +25,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr style="height: 40px;" *ngFor="let track of album.tracks">
+                    <tr style="height: 40px;" *ngFor="let track of album.tracks" (click)="trackClicked(track)">
                         <td style="min-width: 400px; max-width: 400px">
                             {{track.song_name}}</td>
                         <td style="min-width: 300px; max-width: 300px;">
@@ -36,4 +36,9 @@
             </table>
         </div>
     </div>
+</div>
+
+<!-- TRACK CONFIRMATION MODAL -->
+<div [hidden]="!confirmation_modal_open">
+    <app-track-confirmation></app-track-confirmation>
 </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SpotifyService } from '../spotify/spotify.service';
 import { Album, Artist } from '../song-model';
+import { BucketSetlistService } from '../bucket-setlist.service';
 
 @Component({
   selector: 'app-artist',
@@ -11,13 +12,15 @@ export class ArtistComponent implements OnInit {
 
   artist: Artist;
   albums: Album[] = [];
+  confirmation_modal_open = false;
 
   constructor(
-    private spotifySvc: SpotifyService
+    private spotifySvc: SpotifyService,
+    private mainSvc: BucketSetlistService
   ) { }
 
   ngOnInit() {
-    this.spotifySvc.toArtistPage.subscribe(val => {
+    this.mainSvc.toArtistPage.subscribe(val => {
       this.artist = val;
 
       // Use Artist ID to get all Albums of that Artist
@@ -73,7 +76,27 @@ export class ArtistComponent implements OnInit {
         this.albums = artist_albums;
 
       });
-    })
+    });
+
+    // Clicking "Cancel" inside Track Confirmation Modal
+    this.mainSvc.closeTrackConfirmationModal.subscribe(val => {
+      if (val) {
+        this.confirmation_modal_open = false;
+
+        const artistComponent = document.getElementById(`artistComponent`);
+        if (artistComponent) {
+          artistComponent.classList.remove('blur-background_in');
+        }
+      }
+    });
+  }
+
+  trackClicked(track: any) {
+    console.log('TRACK CLICKED: ', track);
+    this.mainSvc.toTrackConfirmationModal.next(track);
+    this.confirmation_modal_open = true;
+
+    document.getElementById(`artistComponent`).classList.add('blur-background_in');
   }
 
   msToTime(duration) {

@@ -1,0 +1,23 @@
+<div class="modal confirmation-modal">
+    <div class="modal-content">
+        <div class="modal-title" style="font-size: 18px; width: 100%;">
+            <img style="border-radius: 10px;" [ngClass]="selected_song?.preview_audio ? 'song-preview' : ''"
+                (click)="playPreviewAudio(selected_song?.preview_audio)" src="{{selected_song?.cover_art}}" width="35%"
+                height="35%" />
+
+            <br>
+
+            <b style="font-size: 22px; margin-top: 3px;">{{selected_song?.song_name}}</b>
+
+            <br>
+
+            <b>{{selected_song?.artist}}</b>
+        </div>
+    </div>
+
+    <div
+        style="position: absolute; bottom: 0;margin: 0 auto;width: 100%;display: flex; justify-content: center; padding-bottom: 30px;">
+        <button (click)="confirmSong()" style="font-size: 20px; margin-right: 10px;">Choose Song</button>
+        <button (click)="cancel()" style="font-size: 20px;">Cancel</button>
+    </div>
+</div>

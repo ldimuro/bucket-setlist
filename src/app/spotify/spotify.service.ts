@@ -10,7 +10,6 @@ import { BehaviorSubject } from 'rxjs';
 export class SpotifyService {
 
   accessToken;
-  toArtistPage = new BehaviorSubject(undefined); 
 
   constructor(public http: HttpClient) { }
 

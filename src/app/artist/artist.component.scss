@@ -46,3 +46,17 @@ tr:hover {
     text-align: center;
     text-transform: uppercase;
 }
+
+.blur-background_in {
+    filter: blur(20px);
+    -webkit-filter: blur(20px);
+    -o-filter: blur(20px);
+    -moz-filter: blur(20px);
+
+    pointer-events: none;
+
+    // transition: all 0.1s ease-in;
+    // -webkit-transition: all 0.1s ease-in;
+    // -o-transition: all 0.1s ease-in;
+    // -moz-transition: all 0.1s ease-in;
+}
