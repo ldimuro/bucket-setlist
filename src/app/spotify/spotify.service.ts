@@ -10,6 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 export class SpotifyService {
 
   accessToken;
+  profile;
 
   constructor(public http: HttpClient) { }
 
@@ -24,14 +25,17 @@ export class SpotifyService {
       const accessToken = await getAccessToken(clientId, code);
       this.setAccessToken(accessToken);
 
-      const profile = await fetchProfile(accessToken);
+      const profile = await fetchProfile(accessToken).then(val => {
+        console.log(val);
+        this.setProfile(val);
+      });
 
       //corsAccess();
 
       // const searchValue = this.callSpotifySearch(accessToken, 'indexical reminder');
       // console.log(searchValue);
 
-      populateUI(profile);
+      // populateUI(profile);
 
       return profile;
 
@@ -74,6 +78,14 @@ export class SpotifyService {
 
   setAccessToken(token: any) {
     this.accessToken = token;
+  }
+
+  getProfile() {
+    return this.profile;
+  }
+
+  setProfile(profile: any) {
+    this.profile = profile;
   }
 }
 

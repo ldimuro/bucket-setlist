@@ -4,6 +4,7 @@ import { Artist, Song } from '../song-model';
 import { Router } from '@angular/router';
 import { SpotifyService } from '../spotify/spotify.service';
 import { BucketSetlistService } from '../bucket-setlist.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search',
@@ -34,15 +35,15 @@ export class SearchComponent implements OnInit {
 
     // Clicking "Cancel" inside Track Confirmation Modal
     this.mainSvc.closeTrackConfirmationModal.subscribe(val => {
-      if (val) {
-        this.confirmation_modal_open = false;
+        if (val) {
+          this.confirmation_modal_open = false;
 
-        const searchComponent = document.getElementById(`searchComponent`);
-        if (searchComponent) {
-          document.getElementById(`searchComponent`).classList.remove('blur-background_in');
+          const searchComponent = document.getElementById(`searchComponent`);
+          if (searchComponent) {
+            document.getElementById(`searchComponent`).classList.remove('blur-background_in');
+          }
         }
-      }
-    });
+      });
   }
 
   searchButtonClicked() {
