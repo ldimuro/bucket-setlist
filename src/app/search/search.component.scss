@@ -81,7 +81,7 @@ th {
     cursor: pointer;
 }
 
-.image-grid {
+.artist-image-grid {
     display: grid;
     grid-gap: 10px;
     // grid-template-columns: 1fr 1fr;
@@ -93,4 +93,29 @@ th {
     margin-left: auto;
     margin-right: auto;
     display: block;
+}
+
+.album {
+    // overflow: hidden;
+}
+
+.album:hover {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.album-image-grid {
+    display: grid;
+    grid-gap: 10px;
+    // grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    width: 80%;
+}
+
+.album-text {
+    display: table;
+    margin: 0 auto;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-family: Arial, Helvetica, sans-serif;
 }

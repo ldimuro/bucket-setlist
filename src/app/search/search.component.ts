@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Artist, Track } from '../song-model';
+import { Album, Artist, Track } from '../song-model';
 import { Router } from '@angular/router';
 import { SpotifyService } from '../spotify/spotify.service';
 import { BucketSetlistService } from '../bucket-setlist.service';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search',
@@ -13,17 +11,15 @@ import { first } from 'rxjs/operators';
 })
 export class SearchComponent implements OnInit {
 
-  total_songs/*: Song[]*/ = [];
+  total_tracks/*: Song[]*/ = [];
   total_artists/*: Artist[]*/ = [];
+  total_albums/*: Album[] */ = [];
   confirmation_modal_open = false;
-  // selected_song;
   search_val;
   filter_val = 'track';
-  is_audio_playing: boolean = false;
   audio_player;
 
   constructor(
-    private httpClient: HttpClient,
     private router: Router,
     private spotifyService: SpotifyService,
     private mainSvc: BucketSetlistService
@@ -47,8 +43,9 @@ export class SearchComponent implements OnInit {
   }
 
   searchButtonClicked() {
-    this.total_songs = [];
+    this.total_tracks = [];
     this.total_artists = [];
+    this.total_albums = [];
 
     let search_result;
     this.spotifyService.callSpotifySearch(this.spotifyService.getAccessToken(), this.search_val, this.filter_val).then(val => {
@@ -59,7 +56,7 @@ export class SearchComponent implements OnInit {
       if (search_result.tracks) {
         search_result.tracks.items.forEach(track => {
           let trackObj: Track = {
-            song_name: track.name,
+            track_name: track.name,
             album: track.album.name,
             cover_art: track.album.images[0].url,
             length: track.duration_ms,
@@ -77,7 +74,7 @@ export class SearchComponent implements OnInit {
           });
           trackObj.artist = artists;
 
-          this.total_songs.push(trackObj);
+          this.total_tracks.push(trackObj);
         });
       }
 
@@ -99,26 +96,45 @@ export class SearchComponent implements OnInit {
 
           this.total_artists.push(obj);
         });
-
-        // console.log(this.total_artists);
       }
 
       // Parse Albums
       if (search_result.albums) {
-        search_result.albums.items.forEach(track => {
-          // this.total_songs.push({
-          //   song_name: track['name'],
-          //   artist: track['artists'][0]['name'],
-          //   album: track['album']['name'],
-          //   cover_art: track['album']['images'][0]['url'],
-          //   length: track['duration_ms']
-          // });
+        search_result.albums.items.forEach(album => {
+          let obj: Album = {
+            album_name: album.name,
+            album_type: album.album_type,
+            release_date: album.release_date,
+            release_date_precision: album.release_date_precision,
+            total_tracks: album.total_tracks,
+            id: album.id
+          };
+
+          const artists = [];
+          album.artists.forEach(artist => {
+            let artistObj = {
+              artist_name: artist.name,
+              id: artist.id
+            }
+            artists.push(artistObj);
+          });
+          obj.artists = artists;
+
+          // If Artist does not have an associated profile image, use placeholder
+          if (album.images.length > 0) {
+            obj.cover_art = album.images[0].url;
+          }
+          else {
+            obj.cover_art = '/assets/placeholder.jpeg';
+          }
+
+          this.total_albums.push(obj);
         });
       }
     });
   }
 
-  songClicked(song: any) {
+  trackClicked(song: any) {
     console.log('SONG CLICKED: ', song);
     this.mainSvc.toTrackConfirmationModal.next(song);
     this.confirmation_modal_open = true;
@@ -127,14 +143,12 @@ export class SearchComponent implements OnInit {
   }
 
   artistClicked(artist: Artist) {
-    this.mainSvc.toArtistPage.next(artist);
-    this.router.navigate(['/artist']);
+    // this.mainSvc.toArtistPage.next(artist);
+    this.router.navigate(['/artist'], { queryParams: { artistid: artist.id }});
   }
 
-  /**
-   *  SONG CONFIRMATION MODAL FUNCTIONS
-   */
-
-
-
+  albumClicked(album: Album) {
+    // this.mainSvc.toArtistPage.next(artist);
+    this.router.navigate(['/artist'], { queryParams: { artistid: album.artists[0].id, albumid: album.id} });
+  }
 }

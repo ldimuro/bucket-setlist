@@ -1,102 +1,126 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SpotifyService } from '../spotify/spotify.service';
 import { Album, Artist, Track } from '../song-model';
 import { BucketSetlistService } from '../bucket-setlist.service';
 import { first } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-artist',
   templateUrl: './artist.component.html',
   styleUrls: ['./artist.component.scss']
 })
-export class ArtistComponent implements OnInit {
+export class ArtistComponent implements OnInit, OnDestroy {
 
   artist: Artist;
   albums: Album[] = [];
+  selected_album;
   confirmation_modal_open = false;
+
+  artistID;
+  albumID;
+
+  private subscriptions = [];
 
   constructor(
     private spotifySvc: SpotifyService,
-    private mainSvc: BucketSetlistService
+    private mainSvc: BucketSetlistService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
-    this.mainSvc.toArtistPage
-      .pipe(first())
-      .subscribe(val => {
-        this.artist = val;
 
-        // Use Artist ID to get all Albums of that Artist
-        this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), val.id).then(data => {
-          const artist_albums: Album[] = [];
-          data.items.forEach(album => {
-            let obj: Album = {
-              album_name: album.name,
-              album_type: album.album_type,
-              // artist: album.artists[0].name,
-              id: album.id,
-              release_date: album.release_date,
-              release_date_precision: album.release_date_precision,
-              total_tracks: album.total_tracks
+    // Retrieve artistID and albumID from URL
+    this.subscriptions.push(this.route.queryParams.subscribe(params => {
+      console.log('PARAMS: ', params);
+      if (params['artistid']) {
+        this.artistID = params['artistid'];
+      }
+      if (params['albumid']) {
+        this.albumID = params['albumid'];
+      }
+    }));
+
+    // Get Artist data from ArtistID
+    this.spotifySvc.getArtist(this.spotifySvc.getAccessToken(), this.artistID).then(data => {
+      this.artist = {
+        artist_name: data.name,
+        id: data.id
+      }
+    });
+
+    // Use Artist ID to get all Albums of that Artist
+    this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), this.artistID).then(async data => {
+      const artist_albums: Album[] = [];
+      data.items.forEach(album => {
+        let obj: Album = {
+          album_name: album.name,
+          album_type: album.album_type,
+          id: album.id,
+          release_date: album.release_date,
+          release_date_precision: album.release_date_precision,
+          total_tracks: album.total_tracks
+        }
+
+        if (album.artists.length > 1) {
+          console.log(album.artists);
+        }
+
+        // If Album does not have associated cover art, use placeholder
+        if (album.images.length > 0) {
+          obj.cover_art = album.images[0].url;
+        }
+        else {
+          obj.cover_art = '/assets/placeholder.jpeg';
+        }
+
+        artist_albums.push(obj);
+      });
+
+      console.log(`ALBUMS OF ${this.artist.artist_name}: `, artist_albums);
+
+      // Retrieve all Tracks for every Album
+      artist_albums.forEach(async album => {
+        await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), this.albumID).then(val => {
+          let tracks = [];
+          val.items.forEach(track => {
+            let trackObj: Track = {
+              track_name: track.name,
+              artist: track.artists[0].name,
+              album: album.album_name,
+              cover_art: album.cover_art,
+              length: this.msToTime(track.duration_ms),
+              preview_audio: track.preview_url,
+              id: track.id
             }
 
-            if (album.artists.length > 1) {
-              console.log(album.artists);
-            }
-
-            // If Album does not have associated cover art, use placeholder
-            if (album.images.length > 0) {
-              obj.cover_art = album.images[0].url;
-            }
-            else {
-              obj.cover_art = '/assets/placeholder.jpeg';
-            }
-
-            artist_albums.push(obj);
-          });
-
-          console.log(`ALBUMS OF ${val.artist_name}: `, artist_albums);
-
-          // Retrieve all Tracks for every Album
-          artist_albums.forEach(async album => {
-            await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), album.id).then(val => {
-              let tracks = [];
-              val.items.forEach(track => {
-                let trackObj: Track = {
-                  song_name: track.name,
-                  artist: track.artists[0].name,
-                  album: album.album_name,
-                  cover_art: album.cover_art,
-                  length: this.msToTime(track.duration_ms),
-                  preview_audio: track.preview_url,
-                  id: track.id
-                }
-
-                // Add all artists in a comma separated list
-                let artists = '';
-                track.artists.forEach((artist, index) => {
-                  artists += artist.name;
-                  if (index !== track.artists.length - 1) {
-                    artists += ', ';
-                  }
-                });
-                trackObj.artist = artists;
-
-                tracks.push(trackObj);
-              })
-
-              // Add "tracks" array to existing Album object
-              album['tracks'] = tracks;
+            // Add all artists in a comma separated list
+            let artists = '';
+            track.artists.forEach((artist, index) => {
+              artists += artist.name;
+              if (index !== track.artists.length - 1) {
+                artists += ', ';
+              }
             });
-          });
+            trackObj.artist = artists;
 
-          this.albums = artist_albums;
+            tracks.push(trackObj);
+          })
 
+          // Add "tracks" array to existing Album object
+          album['tracks'] = tracks;
         });
       });
 
+      this.albums = artist_albums;
+
+      const jump_to_album = await this.waitForElm(`.album_${this.albumID}`) as HTMLElement;
+      jump_to_album.scrollIntoView(true);
+
+    });
+
     // Clicking "Cancel" inside Track Confirmation Modal
-    this.mainSvc.closeTrackConfirmationModal.subscribe(val => {
+    this.subscriptions.push(this.mainSvc.closeTrackConfirmationModal.subscribe(val => {
       if (val) {
         this.confirmation_modal_open = false;
 
@@ -105,7 +129,7 @@ export class ArtistComponent implements OnInit {
           artistComponent.classList.remove('blur-background_in');
         }
       }
-    });
+    }));
   }
 
   trackClicked(track: any) {
@@ -114,6 +138,28 @@ export class ArtistComponent implements OnInit {
     this.confirmation_modal_open = true;
 
     document.getElementById(`artistComponent`).classList.add('blur-background_in');
+  }
+
+  // Waits for the search input/button to render before programmatically entering ID and clicking "Get Data"
+  // https://stackoverflow.com/questions/5525071/how-to-wait-until-an-element-exists
+  waitForElm(selector) {
+    return new Promise(resolve => {
+      if (document.querySelector(selector)) {
+        return resolve(document.querySelector(selector));
+      }
+ 
+      const observer = new MutationObserver(mutations => {
+        if (document.querySelector(selector)) {
+          resolve(document.querySelector(selector));
+          observer.disconnect();
+        }
+      });
+ 
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    });
   }
 
   msToTime(duration) {
@@ -126,6 +172,15 @@ export class ArtistComponent implements OnInit {
     seconds = (seconds < 10) ? "0" + seconds : seconds;
 
     return (hours === "00" ? '' : hours + ":") + minutes + ":" + seconds;
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscriptions) {
+      this.subscriptions.forEach((sub) => {
+        sub.unsubscribe();
+      });
+      this.subscriptions = null;
+    }
   }
 
 }

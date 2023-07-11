@@ -45,9 +45,18 @@ export class SpotifyService {
   }
 
   async callSpotifySearch(token: string, searchVal: string, filterVal: string): Promise<SearchResult> {
-    const searchURL: string = `https://api.spotify.com/v1/search?q=${searchVal}&type=${filterVal}&limit=50`;
+    const searchURL: string = `https://api.spotify.com/v1/search?q=${searchVal}&type=artist,track,album&limit=50`;
 
     const result = await fetch(searchURL, {
+      method: "GET", headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return await result.json();
+  }
+
+  async getArtist(token: string, artist_id: string) {
+    const albumsURL: string = `https://api.spotify.com/v1/artists/${artist_id}`;
+    const result = await fetch(albumsURL, {
       method: "GET", headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -64,7 +73,7 @@ export class SpotifyService {
   }
 
   async getTracksOfAlbum(token: string, album_id: string) {
-    const albumsURL: string = `https://api.spotify.com/v1/albums/${album_id}/tracks`;
+    const albumsURL: string = `https://api.spotify.com/v1/albums/${album_id}/tracks?limit=50`;
     const result = await fetch(albumsURL, {
       method: "GET", headers: { Authorization: `Bearer ${token}` }
     });
