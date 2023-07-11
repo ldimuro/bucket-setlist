@@ -57,9 +57,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
     await this.getData();
   }
 
-  getData() {
+  async getData() {
     // Get Artist data from ArtistID
-    this.spotifySvc.getArtist(this.spotifySvc.getAccessToken(), this.artistID).then(data => {
+    await this.spotifySvc.getArtist(this.spotifySvc.getAccessToken(), this.artistID).then(data => {
 
       if (data['error']) {
         this.mainSvc.toError.next({ status: data['error']['status'], message: data['error']['message'], component: 'ArtistComponent', function: 'getArtist()' });
@@ -70,11 +70,12 @@ export class ArtistComponent implements OnInit, OnDestroy {
           artist_name: data.name,
           id: data.id
         }
+        console.log('ARTIST: ', this.artist);
       }
     });
 
     // Use Artist ID to get all Albums of that Artist
-    this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), this.artistID).then(async data => {
+    await this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), this.artistID).then(async data => {
 
       if (data['error']) {
         this.mainSvc.toError.next({ status: data['error']['status'], message: data['error']['message'], component: 'ArtistComponent', function: 'getAlbumsOfArtist()' });
@@ -90,10 +91,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
             release_date: album.release_date,
             release_date_precision: album.release_date_precision,
             total_tracks: album.total_tracks
-          }
-
-          if (album.artists.length > 1) {
-            console.log(album.artists);
           }
 
           // If Album does not have associated cover art, use placeholder
@@ -112,7 +109,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
         // Retrieve all Tracks for every Album
         artist_albums.forEach(async album => {
           await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), album.id).then(val => {
-            
+
             if (val['error']) {
               this.mainSvc.toError.next({ status: val['error']['status'], message: val['error']['message'], component: 'ArtistComponent', function: 'getTracksOfAlbums()' });
               this.router.navigate(['/search']);

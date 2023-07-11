@@ -6,23 +6,25 @@
     <br>
 
     <div class="center" style="margin-bottom: 20px;">
-        <form #seach="ngForm" (ngSubmit)="searchButtonClicked()">
-            <input class="searchBar" placeholder="Enter a song/artist/album/etc." name="searchBar"
-                [(ngModel)]="search_val">
-            <input type="Submit" value="Find" [disabled]="!search_val" style="padding: 5px 20px 5px 20px; margin-left: 10px;">
+        <form #search="ngForm" autocomplete="off" (ngSubmit)="searchButtonClicked()">
+            <input class="searchBar" placeholder="Enter a song/artist/album" name="searchBar"
+                [(ngModel)]="search_val" (input)="searchValueChanged($event)">
+            <!-- <input type="Submit" value="Find" [disabled]="!search_val" style="padding: 5px 20px 5px 20px; margin-left: 10px;"> -->
         </form>
     </div>
 
-    <div *ngIf="transaction_valid" class="center tabs">
-        <span class="tab" [ngClass]="current_tab === 'track' ? 'tab-selected' : ''" (click)="tabChanged('track')">Songs</span>
-        <span class="tab" [ngClass]="current_tab === 'artist' ? 'tab-selected' : ''" (click)="tabChanged('artist')">Artists</span>
-        <span class="tab" [ngClass]="current_tab === 'album' ? 'tab-selected' : ''" (click)="tabChanged('album')">Albums</span>
+    <div *ngIf="search_val" class="center tabs">
+        <span class="tab" [ngClass]="current_tab === 'track' ? 'tab-selected' : ''"
+            (click)="tabChanged('track')">Songs</span>
+        <span class="tab" [ngClass]="current_tab === 'artist' ? 'tab-selected' : ''"
+            (click)="tabChanged('artist')">Artists</span>
+        <span class="tab" [ngClass]="current_tab === 'album' ? 'tab-selected' : ''"
+            (click)="tabChanged('album')">Albums</span>
     </div>
 
     <div ngSwitch="{{current_tab}}" class="all-search-content">
-        <!-- Song Table -->
         <div *ngSwitchCase="'track'">
-            <div *ngIf="total_tracks.length > 0">
+            <div *ngIf="total_tracks.length > 0; else loadingBlock">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
@@ -46,22 +48,33 @@
                     </tbody>
                 </table>
             </div>
+            <ng-template #loadingBlock style="margin: 0 auto;">
+                <div *ngIf="isTxnProcessing">
+                    <div id="loading-bar-spinner" class="spinner"><div class="spinner-icon"></div></div>
+                </div>
+            </ng-template>
         </div>
         <div *ngSwitchCase="'artist'" class="artist-image-grid center-div">
-            <ng-container *ngFor="let artist of total_artists">
-                <div class="artist-profile" (click)="artistClicked(artist)">
-                    <img style="border-radius: 100px; display: table;
-                    margin: 0 auto;" width="200px" height="200px" src="{{artist.profile_image}}">
-                    <span style="display: table; margin: 0 auto; margin-top:5px; 
-                    font-family: Arial, Helvetica, sans-serif">{{artist.artist_name}}</span>
+            <!-- <div *ngIf="total_artists.length > 0; else loadingBlock"> -->
+                <ng-container *ngFor="let artist of total_artists">
+                    <div class="artist-profile" (click)="artistClicked(artist)">
+                        <img style="border-radius: 100px; display: table;
+                        margin: 0 auto;" width="200px" height="200px" src="{{artist.profile_image}}">
+                        <span style="display: table; margin: 0 auto; margin-top:5px; 
+                        font-family: Arial, Helvetica, sans-serif">{{artist.artist_name}}</span>
+                    </div>
+                </ng-container>
+            <!-- </div> -->
+            <!-- <ng-template #loadingBlock style="margin: 0 auto;">
+                <div *ngIf="isTxnProcessing">
+                    <div id="loading-bar-spinner" class="spinner"><div class="spinner-icon"></div></div>
                 </div>
-
-            </ng-container>
+            </ng-template> -->
         </div>
         <div *ngSwitchCase="'album'" class="album-image-grid center-div">
             <ng-container *ngFor="let album of total_albums">
                 <div class="album" (click)="albumClicked(album)">
-                    <img width="200px" height="200px" src="{{album.cover_art}}">
+                    <img width="200px" height="200px" class="album-cover" src="{{album.cover_art}}">
                     <span class="album-text">{{album.album_name}}</span>
                 </div>
             </ng-container>

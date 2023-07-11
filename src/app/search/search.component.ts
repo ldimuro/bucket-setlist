@@ -29,6 +29,7 @@ export class SearchComponent implements OnInit {
   audio_player;
   error: ErrorMessage;
   transaction_valid;
+  isTxnProcessing: boolean;
 
   constructor(
     private router: Router,
@@ -59,6 +60,7 @@ export class SearchComponent implements OnInit {
         if (val) {
           this.transaction_valid = false;
           this.current_tab = Tabs.Error;
+          this.isTxnProcessing = false;
 
           this.error = {
             status: val['status'],
@@ -72,12 +74,14 @@ export class SearchComponent implements OnInit {
       });
   }
 
-  searchButtonClicked() {
-    this.transaction_valid = null;
-    this.total_tracks = [];
-    this.total_artists = [];
-    this.total_albums = [];
-    this.current_tab = Tabs.Track;
+  search() {
+    this.clearSearch();
+
+    this.isTxnProcessing = true;
+
+    if (this.current_tab === Tabs.Error || !this.search_val) {
+      this.current_tab = Tabs.Track;
+    }
 
     let search_result;
     this.spotifySvc.callSpotifySearch(this.spotifySvc.getAccessToken(), this.search_val, this.current_tab).then(val => {
@@ -170,7 +174,20 @@ export class SearchComponent implements OnInit {
           });
         }
       }
+    }).finally(() => {
+      this.isTxnProcessing = false;
     });
+  }
+
+  // Makes Spotify API call every keystroke update in the Search Bar
+  searchValueChanged($event: any) {
+    if ($event.target.value !== '') {
+      this.search();
+    }
+    else {
+      // console.log('CLEAR SEARCH');
+      this.clearSearch(true);
+    }
   }
 
   trackClicked(song: any) {
@@ -187,6 +204,16 @@ export class SearchComponent implements OnInit {
 
   albumClicked(album: Album) {
     this.router.navigate(['/artist'], { queryParams: { artistid: album.artists[0].id, albumid: album.id } });
+  }
+
+  clearSearch(resetTabs?: boolean) {
+    this.total_tracks = [];
+    this.total_artists = [];
+    this.total_albums = [];
+
+    if (resetTabs) {
+      this.current_tab = Tabs.Track;
+    }
   }
 
   tabChanged(tab: Tabs) {

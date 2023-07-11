@@ -6,8 +6,11 @@
     <div *ngIf="albums.length > 0" class="album-list">
         <div *ngFor="let album of albums">
 
+            <!-- Blank div acts as a marker for each album for autoScroll -->
+            <div class="album_{{album.id}}">&nbsp;</div>
+
             <div class="album-info">
-                <img src="{{album.cover_art}}" width="200px" height="200px" class="album_{{album.id}}">
+                <img src="{{album.cover_art}}" width="200px" height="200px">
                 <div>
                     <h2 style="padding-left: 20px;">{{album.album_name}}</h2>
                     <p style="padding-left: 20px;">{{album.release_date | date: longDate}}&nbsp; &#8226;
