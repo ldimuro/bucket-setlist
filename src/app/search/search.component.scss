@@ -3,7 +3,7 @@
 }
 
 .searchBar {
-    width: 60%;
+    width: 30%;
     height: 30px;
     font-size: 18px;
 
@@ -12,7 +12,7 @@
     border-width: 1px;
 }
 
-.tabs {
+.tab {
     font-family: Arial, Helvetica, sans-serif;
     margin-right: 10px;
     margin-left: 10px;
@@ -21,7 +21,7 @@
     border-radius: 25px;
 }
 
-.tabs:hover {
+.tab:hover {
     background-color: rgb(203, 242, 255);
     cursor: pointer;
 }
@@ -30,13 +30,18 @@
     background-color: rgb(135, 225, 255);
 }
 
+.tabs {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
 .center-div {
     justify-content: center;
     display: flex;
 }
 
 .all-search-content {
-    height: 80%;
+    height: 70%;
     // width: 80%;
     overflow: scroll;
     // margin: 0 auto;
@@ -74,9 +79,9 @@ th {
 
 .header {
     text-align: left;
-    border-bottom: 0.5pt solid rgb(144, 144, 144);
+    border-bottom: 0.5pt solid rgb(178, 178, 178);
     font-weight: lighter;
-    color: #818181;
+    color: rgb(178, 178, 178);
 }
 
 .tracks:hover {
@@ -97,10 +102,15 @@ th {
     width: 80%;
 }
 
-.cover-art {
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
+// .cover-art {
+//     margin-left: auto;
+//     margin-right: auto;
+//     display: block;
+// }
+
+.track-cover-art {
+    border-radius: 7px;
+    border: lightgray solid 1px;
 }
 
 .album:hover {
@@ -111,9 +121,14 @@ th {
 .album-image-grid {
     display: grid;
     grid-gap: 10px;
-    // grid-template-columns: 1fr 1fr;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     width: 80%;
+}
+
+.album-cover {
+    display: table;
+    margin: 0 auto;
+    border: lightgray solid 1px;
 }
 
 .album-text {
@@ -122,4 +137,18 @@ th {
     margin-top: 5px;
     margin-bottom: 10px;
     font-family: Arial, Helvetica, sans-serif;
+}
+
+.error-header {
+    font-size: 36px;
+    color: #ff5d4b;
+    font-family: monospace;
+    text-align: center;
+}
+
+.error-message {
+    text-align: center;
+    font-size: 30px;
+    color: #ff5d4b;
+    font-family: monospace;
 }

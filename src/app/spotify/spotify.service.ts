@@ -16,6 +16,7 @@ export class SpotifyService {
 
   async authorizeSpotifyProfile() {
     const clientId = "3d2321a8c72646e191c8145193fa1cf7"; // clientID provided when creating an app
+    // const clientId = "2"; // clientID provided when creating an app
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
 
@@ -26,8 +27,17 @@ export class SpotifyService {
       this.setAccessToken(accessToken);
 
       const profile = await fetchProfile(accessToken).then(val => {
-        console.log(val);
-        this.setProfile(val);
+        const search_result = val;
+        if (search_result['error']) {
+          const error_message = `[${search_result['error']['status']}] ${search_result['error']['message']}`;
+          console.error(`ERROR IN SearchComponent searchButtonClicked(): ${error_message}`);
+        }
+        else {
+          this.setProfile(search_result);
+        }
+
+
+        // this.setProfile(val);
       });
 
       //corsAccess();

@@ -30,3 +30,10 @@ export class Image {
     height: number;
     width: number;
 }
+
+export class ErrorMessage {
+    status: string;
+    message: string;
+    component: string;
+    function: string;
+}

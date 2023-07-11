@@ -3,7 +3,7 @@ import { SpotifyService } from '../spotify/spotify.service';
 import { Album, Artist, Track } from '../song-model';
 import { BucketSetlistService } from '../bucket-setlist.service';
 import { first } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-artist',
@@ -25,10 +25,11 @@ export class ArtistComponent implements OnInit, OnDestroy {
   constructor(
     private spotifySvc: SpotifyService,
     private mainSvc: BucketSetlistService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     // Retrieve artistID and albumID from URL
     this.subscriptions.push(this.route.queryParams.subscribe(params => {
@@ -41,84 +42,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
       }
     }));
 
-    // Get Artist data from ArtistID
-    this.spotifySvc.getArtist(this.spotifySvc.getAccessToken(), this.artistID).then(data => {
-      this.artist = {
-        artist_name: data.name,
-        id: data.id
-      }
-    });
-
-    // Use Artist ID to get all Albums of that Artist
-    this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), this.artistID).then(async data => {
-      const artist_albums: Album[] = [];
-      data.items.forEach(album => {
-        let obj: Album = {
-          album_name: album.name,
-          album_type: album.album_type,
-          id: album.id,
-          release_date: album.release_date,
-          release_date_precision: album.release_date_precision,
-          total_tracks: album.total_tracks
-        }
-
-        if (album.artists.length > 1) {
-          console.log(album.artists);
-        }
-
-        // If Album does not have associated cover art, use placeholder
-        if (album.images.length > 0) {
-          obj.cover_art = album.images[0].url;
-        }
-        else {
-          obj.cover_art = '/assets/placeholder.jpeg';
-        }
-
-        artist_albums.push(obj);
-      });
-
-      console.log(`ALBUMS OF ${this.artist.artist_name}: `, artist_albums);
-
-      // Retrieve all Tracks for every Album
-      artist_albums.forEach(async album => {
-        await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), album.id).then(val => {
-          let tracks = [];
-          val.items.forEach(track => {
-            let trackObj: Track = {
-              track_name: track.name,
-              artist: track.artists[0].name,
-              album: album.album_name,
-              cover_art: album.cover_art,
-              length: this.msToTime(track.duration_ms),
-              preview_audio: track.preview_url,
-              id: track.id
-            }
-
-            // Add all artists in a comma separated list
-            let artists = '';
-            track.artists.forEach((artist, index) => {
-              artists += artist.name;
-              if (index !== track.artists.length - 1) {
-                artists += ', ';
-              }
-            });
-            trackObj.artist = artists;
-
-            tracks.push(trackObj);
-          })
-
-          // Add "tracks" array to existing Album object
-          album['tracks'] = tracks;
-        });
-      });
-
-      this.albums = artist_albums;
-
-      const jump_to_album = await this.waitForElm(`.album_${this.albumID}`) as HTMLElement;
-      jump_to_album.scrollIntoView(true);
-
-    });
-
     // Clicking "Cancel" inside Track Confirmation Modal
     this.subscriptions.push(this.mainSvc.closeTrackConfirmationModal.subscribe(val => {
       if (val) {
@@ -130,6 +53,111 @@ export class ArtistComponent implements OnInit, OnDestroy {
         }
       }
     }));
+
+    await this.getData();
+  }
+
+  getData() {
+    // Get Artist data from ArtistID
+    this.spotifySvc.getArtist(this.spotifySvc.getAccessToken(), this.artistID).then(data => {
+
+      if (data['error']) {
+        this.mainSvc.toError.next({ status: data['error']['status'], message: data['error']['message'], component: 'ArtistComponent', function: 'getArtist()' });
+        this.router.navigate(['/search']);
+      }
+      else {
+        this.artist = {
+          artist_name: data.name,
+          id: data.id
+        }
+      }
+    });
+
+    // Use Artist ID to get all Albums of that Artist
+    this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), this.artistID).then(async data => {
+
+      if (data['error']) {
+        this.mainSvc.toError.next({ status: data['error']['status'], message: data['error']['message'], component: 'ArtistComponent', function: 'getAlbumsOfArtist()' });
+        this.router.navigate(['/search']);
+      }
+      else {
+        const artist_albums: Album[] = [];
+        data.items.forEach(album => {
+          let obj: Album = {
+            album_name: album.name,
+            album_type: album.album_type,
+            id: album.id,
+            release_date: album.release_date,
+            release_date_precision: album.release_date_precision,
+            total_tracks: album.total_tracks
+          }
+
+          if (album.artists.length > 1) {
+            console.log(album.artists);
+          }
+
+          // If Album does not have associated cover art, use placeholder
+          if (album.images.length > 0) {
+            obj.cover_art = album.images[0].url;
+          }
+          else {
+            obj.cover_art = '/assets/placeholder.jpeg';
+          }
+
+          artist_albums.push(obj);
+        });
+
+        console.log(`ALBUMS OF ${this.artist.artist_name}: `, artist_albums);
+
+        // Retrieve all Tracks for every Album
+        artist_albums.forEach(async album => {
+          await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), album.id).then(val => {
+            
+            if (val['error']) {
+              this.mainSvc.toError.next({ status: val['error']['status'], message: val['error']['message'], component: 'ArtistComponent', function: 'getTracksOfAlbums()' });
+              this.router.navigate(['/search']);
+            }
+            else if (val) {
+              let tracks = [];
+              val.items.forEach(track => {
+                let trackObj: Track = {
+                  track_name: track.name,
+                  artist: track.artists[0].name,
+                  album: album.album_name,
+                  cover_art: album.cover_art,
+                  length: this.msToTime(track.duration_ms),
+                  preview_audio: track.preview_url,
+                  id: track.id
+                }
+
+                // Add all artists in a comma separated list
+                let artists = '';
+                track.artists.forEach((artist, index) => {
+                  artists += artist.name;
+                  if (index !== track.artists.length - 1) {
+                    artists += ', ';
+                  }
+                });
+                trackObj.artist = artists;
+
+                tracks.push(trackObj);
+              })
+
+              // Add "tracks" array to existing Album object
+              album['tracks'] = tracks;
+            }
+          });
+        });
+
+        this.albums = artist_albums;
+
+        const jump_to_album = await this.waitForElm(`.album_${this.albumID}`) as HTMLElement;
+        jump_to_album.scrollIntoView(true);
+      }
+
+
+
+    });
   }
 
   trackClicked(track: any) {
@@ -147,14 +175,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
       if (document.querySelector(selector)) {
         return resolve(document.querySelector(selector));
       }
- 
+
       const observer = new MutationObserver(mutations => {
         if (document.querySelector(selector)) {
           resolve(document.querySelector(selector));
           observer.disconnect();
         }
       });
- 
+
       observer.observe(document.body, {
         childList: true,
         subtree: true

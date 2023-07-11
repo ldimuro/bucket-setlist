@@ -11,4 +11,5 @@ export class BucketSetlistService {
   toTrackConfirmationModal = new BehaviorSubject(undefined);
   closeTrackConfirmationModal = new BehaviorSubject(undefined);
   toHomePage = new BehaviorSubject(undefined);
+  toError = new BehaviorSubject(undefined);
 }
