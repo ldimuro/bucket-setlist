@@ -7,20 +7,19 @@
 
     <div class="center" style="margin-bottom: 20px;">
         <form #seach="ngForm" (ngSubmit)="searchButtonClicked()">
-            <select class="searchDropdown" name="searchDropdown" id="searchDropdown" [(ngModel)]="filter_val">
-                <option value="track" selected>Song</option>
-                <option value="artist">Artist</option>
-                <option value="album">Album</option>
-            </select>
             <input class="searchBar" placeholder="Enter a song/artist/album/etc." name="searchBar"
                 [(ngModel)]="search_val">
             <input type="Submit" value="Find" style="padding: 5px 20px 5px 20px; margin-left: 10px;">
         </form>
-
-        <!-- <button (click)="searchButtonClicked()">Find</button> -->
     </div>
 
-    <div ngSwitch="{{filter_val}}" class="all-search-content">
+    <div class="center">
+        <span class="tabs" [ngClass]="current_tab === 'track' ? 'tab-selected' : ''" (click)="tabChanged('track')">Songs</span>
+        <span class="tabs" [ngClass]="current_tab === 'artist' ? 'tab-selected' : ''" (click)="tabChanged('artist')">Artists</span>
+        <span class="tabs" [ngClass]="current_tab === 'album' ? 'tab-selected' : ''" (click)="tabChanged('album')">Albums</span>
+    </div>
+
+    <div ngSwitch="{{current_tab}}" class="all-search-content">
         <!-- Song Table -->
         <div *ngSwitchCase="'track'">
             <div *ngIf="total_tracks.length > 0">
@@ -60,7 +59,7 @@
             <ng-container *ngFor="let artist of total_artists">
                 <div class="artist-profile" (click)="artistClicked(artist)">
                     <img style="border-radius: 100px; display: table;
-                    margin: 0 auto;" width="120px" height="120px" src="{{artist.profile_image}}">
+                    margin: 0 auto;" width="200px" height="200px" src="{{artist.profile_image}}">
                     <span style="display: table; margin: 0 auto; margin-top:5px; 
                     font-family: Arial, Helvetica, sans-serif">{{artist.artist_name}}</span>
                 </div>

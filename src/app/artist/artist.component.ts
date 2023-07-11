@@ -81,7 +81,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
       // Retrieve all Tracks for every Album
       artist_albums.forEach(async album => {
-        await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), this.albumID).then(val => {
+        await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), album.id).then(val => {
           let tracks = [];
           val.items.forEach(track => {
             let trackObj: Track = {

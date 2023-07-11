@@ -3,7 +3,7 @@
 }
 
 .searchBar {
-    width: 40%;
+    width: 60%;
     height: 30px;
     font-size: 18px;
 
@@ -12,14 +12,22 @@
     border-width: 1px;
 }
 
-.searchDropdown {
-    height: 30px;
-    width: 100px;
+.tabs {
+    font-family: Arial, Helvetica, sans-serif;
     margin-right: 10px;
+    margin-left: 10px;
+    padding: 5px 20px 5px 20px;
+    border: solid black 1px;
+    border-radius: 25px;
+}
 
-    border-radius: 5px;
-    border-style: solid;
-    border-width: 1px;
+.tabs:hover {
+    background-color: rgb(203, 242, 255);
+    cursor: pointer;
+}
+
+.tab-selected {
+    background-color: rgb(135, 225, 255);
 }
 
 .center-div {
@@ -85,7 +93,7 @@ th {
     display: grid;
     grid-gap: 10px;
     // grid-template-columns: 1fr 1fr;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     width: 80%;
 }
 
@@ -93,10 +101,6 @@ th {
     margin-left: auto;
     margin-right: auto;
     display: block;
-}
-
-.album {
-    // overflow: hidden;
 }
 
 .album:hover {

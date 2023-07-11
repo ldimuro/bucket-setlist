@@ -4,11 +4,18 @@ import { Router } from '@angular/router';
 import { SpotifyService } from '../spotify/spotify.service';
 import { BucketSetlistService } from '../bucket-setlist.service';
 
+export enum Tabs {
+  track = 'track',
+  artist = 'artist',
+  album = 'album'
+}
+
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
+
 export class SearchComponent implements OnInit {
 
   total_tracks/*: Song[]*/ = [];
@@ -16,7 +23,7 @@ export class SearchComponent implements OnInit {
   total_albums/*: Album[] */ = [];
   confirmation_modal_open = false;
   search_val;
-  filter_val = 'track';
+  current_tab = Tabs.track
   audio_player;
 
   constructor(
@@ -48,7 +55,7 @@ export class SearchComponent implements OnInit {
     this.total_albums = [];
 
     let search_result;
-    this.spotifyService.callSpotifySearch(this.spotifyService.getAccessToken(), this.search_val, this.filter_val).then(val => {
+    this.spotifyService.callSpotifySearch(this.spotifyService.getAccessToken(), this.search_val, this.current_tab).then(val => {
       console.log(val);
       search_result = val;
 
@@ -143,12 +150,14 @@ export class SearchComponent implements OnInit {
   }
 
   artistClicked(artist: Artist) {
-    // this.mainSvc.toArtistPage.next(artist);
     this.router.navigate(['/artist'], { queryParams: { artistid: artist.id }});
   }
 
   albumClicked(album: Album) {
-    // this.mainSvc.toArtistPage.next(artist);
     this.router.navigate(['/artist'], { queryParams: { artistid: album.artists[0].id, albumid: album.id} });
+  }
+
+  tabChanged(tab: Tabs) {
+    this.current_tab = tab;
   }
 }
