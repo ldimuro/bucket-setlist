@@ -16,11 +16,7 @@ export class SpotifyService {
 
   async authorizeSpotifyProfile() {
     const clientId = "3d2321a8c72646e191c8145193fa1cf7"; // clientID provided when creating an app
-<<<<<<< HEAD
     //check the current URL in the search bar and store its parameters
-=======
-    // const clientId = "2"; // clientID provided when creating an app
->>>>>>> 49f176be49348b56aa43c89333826e759ebd6b05
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
 
@@ -46,10 +42,6 @@ export class SpotifyService {
 
         // this.setProfile(val);
       });
-
-      await this.testAddingSongToPlaylist(accessToken, '6K4t31amVTZDgR3sKmwUJJ');
-
-      //corsAccess();
 
       // const searchValue = this.callSpotifySearch(accessToken, 'indexical reminder');
       // console.log(searchValue);
@@ -109,19 +101,6 @@ export class SpotifyService {
     return await result.json();
   }
 
-  async testAddingSongToPlaylist(token: string, trackID: string)
-  {
-    const spotifyEndpoint: string = 'https://api.spotify.com/v1/playlists/';
-    const playlistID: string = '5eJvHzeYF2BTaPGqfOoukM/';
-    const trackToAdd: string = 'tracks?uris=spotify%3Atrack%3A' + trackID;
-    const urlToFetch: string = spotifyEndpoint + playlistID + trackToAdd;
-
-    const result = await fetch(urlToFetch, {
-      method: "POST", headers: {Authorization: `Bearer ${token}`}
-    });
-
-  }
-
   getAccessToken() {
     return this.accessToken;
   }
@@ -138,46 +117,6 @@ export class SpotifyService {
     this.profile = profile;
   }
 }
-
-
-
-
-async function corsAccess() {
-  /*
-  const headers = new HttpHeaders()
-  headers.append('Access-Control-Allow-Origin', 'http://localhost:4200/');
-
-  return this.http.get("http://localhost:4200/", headers);
-
-  console.log(headers);
-  
-  //return this.httpClient.get(this.baseURL + 'users/' + userName + '/repos', {'headers': headers})
-  */
-
-  /*
-  const baseURL: string = "http://localhost:4200/callback";
-
-  const headerDict = {
-    'Access-Control-Allow-Origin': baseURL,
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Access-Control-Allow-Headers': 'Content-Type',
-  }
-
-  const requestOptions = {
-    headers: new Headers(headerDict),
-  }
-
-  return this.http.get(this.baseURL, requestOptions);
-  */
-
-  let headers = new HttpHeaders()
-  headers = headers.set('content-type', 'application/json')
-  headers = headers.set('Access-Control-Allow-Origin', '*');
-  console.log(headers);
-  return this.HttpClient.get("http://localhost:4200", { 'headers': headers });
-}
-
 
 //Redirect the user to the Spotify authorization page
 export async function redirectToAuthCodeFlow(clientId: string) {
@@ -196,7 +135,7 @@ export async function redirectToAuthCodeFlow(clientId: string) {
   //scope is a list of permissions that we're requesting from the user (all scopes need to be included when moving to next stage of production)
   //user-read-private: gives us access to the user's subscription details (allows for Search and Get Current User's Profile)
   //user-read-email: gives us access to the user's real email address (allows for Get Current User's Profile)
-  params.append("scope", "user-read-private user-read-email playlist-modify-public playlist-modify-private");
+  params.append("scope", "user-read-private user-read-email playlist-modify-public");
   params.append("code_challenge_method", "S256");
   params.append("code_challenge", challenge);
 

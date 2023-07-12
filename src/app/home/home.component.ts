@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BucketSetlistService } from '../bucket-setlist.service';
 import { first } from 'rxjs/operators';
-import { SpotifyService } from '../spotify/spotify.service';
+import { SpotifyService, getAccessToken } from '../spotify/spotify.service';
 
 @Component({
   selector: 'app-home',
@@ -25,10 +25,26 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (val) {
           this.chosen_track = val;
           console.log('CHOSEN TRACK: ', this.chosen_track);
+          this.addSongToPlaylist(this.spotifySvc.accessToken, this.chosen_track.id);
         }
     });
 
     this.profile = this.spotifySvc.getProfile();
+  }
+
+  async addSongToPlaylist(token: string, trackID: string)
+  {
+    const spotifyEndpoint: string = 'https://api.spotify.com/v1/playlists/';
+    //make sure that the playlist in home.component.html matches this one
+    const playlistID: string = '5eJvHzeYF2BTaPGqfOoukM/';
+    //const playlistID: string = '1vmD1bQuewjmMC635Mr41j/';
+    const trackToAdd: string = 'tracks?uris=spotify%3Atrack%3A' + trackID;
+    const urlToFetch: string = spotifyEndpoint + playlistID + trackToAdd;
+
+    const result = await fetch(urlToFetch, {
+      method: "POST", headers: {Authorization: `Bearer ${token}`}
+    });
+
   }
 
   ngOnDestroy(): void {
