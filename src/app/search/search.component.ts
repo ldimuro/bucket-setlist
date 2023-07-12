@@ -185,7 +185,6 @@ export class SearchComponent implements OnInit {
       this.search();
     }
     else {
-      // console.log('CLEAR SEARCH');
       this.clearSearch(true);
     }
   }

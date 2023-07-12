@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SpotifyService } from '../spotify/spotify.service';
 import { Album, Artist, Track } from '../song-model';
 import { BucketSetlistService } from '../bucket-setlist.service';
-import { first } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -33,7 +32,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
     // Retrieve artistID and albumID from URL
     this.subscriptions.push(this.route.queryParams.subscribe(params => {
-      console.log('PARAMS: ', params);
       if (params['artistid']) {
         this.artistID = params['artistid'];
       }
@@ -59,23 +57,57 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   async getData() {
     // Get Artist data from ArtistID
-    await this.spotifySvc.getArtist(this.spotifySvc.getAccessToken(), this.artistID).then(data => {
+    this.artist = await this.getArtist(this.artistID);
 
+    // Use Artist ID to get all Albums of that Artist
+    this.albums = await this.getAllAlbums(this.artistID);
+    // this.albums.sort((a, b) => (a.release_date as any) - (b.release_date as any));
+
+    this.albums.forEach(async album => {
+      const tracks = await this.getAllTracks(album);
+
+      // If album has 'tracks' value, that means that they have been recursively added, and just need to add in tracks from the final call
+      if (album.tracks) {
+        album.tracks = album.tracks.concat(tracks);
+
+        // Track listings with more than 50 tracks will be out of order, so order by track_number
+        album.tracks.sort((a, b) => a.track_number - b.track_number)
+      }
+      else {
+        album.tracks = tracks;
+      }
+    });
+
+    // If user selected an album, jump to that album in the page
+    const jump_to_album = await this.waitForElm(`.album_${this.albumID}`) as HTMLElement;
+    jump_to_album.scrollIntoView(true);
+  }
+
+  async getArtist(artist_id: string) {
+    let artist;
+
+    // Get Artist data from ArtistID
+    await this.spotifySvc.getArtist(this.spotifySvc.getAccessToken(), artist_id).then(data => {
       if (data['error']) {
         this.mainSvc.toError.next({ status: data['error']['status'], message: data['error']['message'], component: 'ArtistComponent', function: 'getArtist()' });
         this.router.navigate(['/search']);
       }
       else {
-        this.artist = {
+        let artistObj: Artist = {
           artist_name: data.name,
           id: data.id
         }
-        console.log('ARTIST: ', this.artist);
+
+        artist = artistObj;
       }
     });
 
-    // Use Artist ID to get all Albums of that Artist
-    await this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), this.artistID).then(async data => {
+    return artist;
+  }
+
+  async getAllAlbums(artist_id: string) {
+    let all_albums = [];
+    await this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), artist_id).then(async data => {
 
       if (data['error']) {
         this.mainSvc.toError.next({ status: data['error']['status'], message: data['error']['message'], component: 'ArtistComponent', function: 'getAlbumsOfArtist()' });
@@ -106,55 +138,69 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
         console.log(`ALBUMS OF ${this.artist.artist_name}: `, artist_albums);
 
-        // Retrieve all Tracks for every Album
-        artist_albums.forEach(async album => {
-          await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), album.id).then(val => {
+        all_albums = artist_albums;
+      }
+    });
 
-            if (val['error']) {
-              this.mainSvc.toError.next({ status: val['error']['status'], message: val['error']['message'], component: 'ArtistComponent', function: 'getTracksOfAlbums()' });
-              this.router.navigate(['/search']);
-            }
-            else if (val) {
-              let tracks = [];
-              val.items.forEach(track => {
-                let trackObj: Track = {
-                  track_name: track.name,
-                  artist: track.artists[0].name,
-                  album: album.album_name,
-                  cover_art: album.cover_art,
-                  length: this.msToTime(track.duration_ms),
-                  preview_audio: track.preview_url,
-                  id: track.id
-                }
+    return all_albums;
+  }
 
-                // Add all artists in a comma separated list
-                let artists = '';
-                track.artists.forEach((artist, index) => {
-                  artists += artist.name;
-                  if (index !== track.artists.length - 1) {
-                    artists += ', ';
-                  }
-                });
-                trackObj.artist = artists;
+  async getAllTracks(album: Album, next_url?: string, additional_tracks?: any[]) {
+    let all_tracks = [];
 
-                tracks.push(trackObj);
-              })
+    await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), album.id, next_url).then(async val => {
+      // console.log('TRACKS FROM ', album.album_name, ': ', val);
 
-              // Add "tracks" array to existing Album object
-              album['tracks'] = tracks;
+      if (val['error']) {
+        this.mainSvc.toError.next({ status: val['error']['status'], message: val['error']['message'], component: 'ArtistComponent', function: 'getTracksOfAlbums()' });
+        this.router.navigate(['/search']);
+      }
+      else if (val) {
+        let tracks = [];
+        val.items.forEach(track => {
+          let trackObj: Track = {
+            track_name: track.name,
+            artist: track.artists[0].name,
+            album: album.album_name,
+            cover_art: album.cover_art,
+            length: this.msToTime(track.duration_ms),
+            preview_audio: track.preview_url,
+            track_number: track.track_number,
+            id: track.id
+          }
+
+          // Add all artists in a comma separated list
+          let artists = '';
+          track.artists.forEach((artist, index) => {
+            artists += artist.name;
+            if (index !== track.artists.length - 1) {
+              artists += ', ';
             }
           });
+          trackObj.artist = artists;
+
+          tracks.push(trackObj);
         });
 
-        this.albums = artist_albums;
+        // If API call contains 'next' value, that means that the rest of the values must
+        // be obtained recursively
+        if (val.next) {
+          additional_tracks = await this.getAllTracks(album, val.next, tracks);
 
-        const jump_to_album = await this.waitForElm(`.album_${this.albumID}`) as HTMLElement;
-        jump_to_album.scrollIntoView(true);
+          // If values have already been added recursively, add additional_tracks to existing list
+          if (album.tracks) {
+            album.tracks = [...album.tracks, ...additional_tracks];
+          }
+          else {
+            album.tracks = additional_tracks;
+          }
+        }
+
+        all_tracks = tracks;
       }
-
-
-
     });
+
+    return all_tracks;
   }
 
   trackClicked(track: any) {

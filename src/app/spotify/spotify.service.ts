@@ -82,8 +82,15 @@ export class SpotifyService {
     return await result.json();
   }
 
-  async getTracksOfAlbum(token: string, album_id: string) {
-    const albumsURL: string = `https://api.spotify.com/v1/albums/${album_id}/tracks?limit=50`;
+  async getTracksOfAlbum(token: string, album_id: string, next_url?: string) {
+    let albumsURL: string;
+    if (next_url) {
+      albumsURL = next_url;
+    }
+    else {
+      albumsURL = `https://api.spotify.com/v1/albums/${album_id}/tracks?limit=50`;
+    }
+
     const result = await fetch(albumsURL, {
       method: "GET", headers: { Authorization: `Bearer ${token}` }
     });
