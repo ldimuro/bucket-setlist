@@ -51,9 +51,17 @@ table {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.col-header {
+    text-align: left;
+    border-bottom: 0.5pt solid rgb(178, 178, 178);
+    font-weight: lighter;
+    color: rgb(178, 178, 178);
+}
+
 .header {
     text-align: center;
     text-transform: uppercase;
+    font-size: 40px;
 }
 
 .blur-background_in {
@@ -68,4 +76,10 @@ table {
     // -webkit-transition: all 0.1s ease-in;
     // -o-transition: all 0.1s ease-in;
     // -moz-transition: all 0.1s ease-in;
+}
+
+.track-number {
+    color: rgb(178, 178, 178);
+    font-weight: lighter;
+    font-size: 80%;
 }

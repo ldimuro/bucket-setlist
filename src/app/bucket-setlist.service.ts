@@ -8,8 +8,8 @@ export class BucketSetlistService {
 
   constructor() { }
 
-  toArtistPage = new BehaviorSubject(undefined);
   toTrackConfirmationModal = new BehaviorSubject(undefined);
   closeTrackConfirmationModal = new BehaviorSubject(undefined);
   toHomePage = new BehaviorSubject(undefined);
+  toError = new BehaviorSubject(undefined);
 }

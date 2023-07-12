@@ -16,7 +16,11 @@ export class SpotifyService {
 
   async authorizeSpotifyProfile() {
     const clientId = "3d2321a8c72646e191c8145193fa1cf7"; // clientID provided when creating an app
+<<<<<<< HEAD
     //check the current URL in the search bar and store its parameters
+=======
+    // const clientId = "2"; // clientID provided when creating an app
+>>>>>>> 49f176be49348b56aa43c89333826e759ebd6b05
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
 
@@ -30,8 +34,17 @@ export class SpotifyService {
       this.setAccessToken(accessToken);
 
       const profile = await fetchProfile(accessToken).then(val => {
-        console.log(val);
-        this.setProfile(val);
+        const search_result = val;
+        if (search_result['error']) {
+          const error_message = `[${search_result['error']['status']}] ${search_result['error']['message']}`;
+          console.error(`ERROR IN SearchComponent searchButtonClicked(): ${error_message}`);
+        }
+        else {
+          this.setProfile(search_result);
+        }
+
+
+        // this.setProfile(val);
       });
 
       await this.testAddingSongToPlaylist(accessToken, '6K4t31amVTZDgR3sKmwUJJ');
@@ -53,9 +66,18 @@ export class SpotifyService {
   }
 
   async callSpotifySearch(token: string, searchVal: string, filterVal: string): Promise<SearchResult> {
-    const searchURL: string = `https://api.spotify.com/v1/search?q=${searchVal}&type=${filterVal}&limit=50`;
+    const searchURL: string = `https://api.spotify.com/v1/search?q=${searchVal}&type=artist,track,album&limit=50`;
 
     const result = await fetch(searchURL, {
+      method: "GET", headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return await result.json();
+  }
+
+  async getArtist(token: string, artist_id: string) {
+    const albumsURL: string = `https://api.spotify.com/v1/artists/${artist_id}`;
+    const result = await fetch(albumsURL, {
       method: "GET", headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -71,8 +93,15 @@ export class SpotifyService {
     return await result.json();
   }
 
-  async getTracksOfAlbum(token: string, album_id: string) {
-    const albumsURL: string = `https://api.spotify.com/v1/albums/${album_id}/tracks`;
+  async getTracksOfAlbum(token: string, album_id: string, next_url?: string) {
+    let albumsURL: string;
+    if (next_url) {
+      albumsURL = next_url;
+    }
+    else {
+      albumsURL = `https://api.spotify.com/v1/albums/${album_id}/tracks?limit=50`;
+    }
+
     const result = await fetch(albumsURL, {
       method: "GET", headers: { Authorization: `Bearer ${token}` }
     });
