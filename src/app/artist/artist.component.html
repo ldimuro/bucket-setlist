@@ -7,7 +7,7 @@
         <div *ngFor="let album of albums">
 
             <!-- Blank div acts as a marker for each album for autoScroll -->
-            <div class="album_{{album.id}}">&nbsp;</div>
+            <div class="album_{{album.id}}" id="album_{{album.id}}">&nbsp;</div>
 
             <div class="album-info">
                 <img src="{{album.cover_art}}" width="200px" height="200px">
@@ -22,6 +22,7 @@
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
+                        <th class="col-header">#</th>
                         <th class="col-header">Name</th>
                         <th class="col-header">Artist</th>
                         <th class="col-header">&nbsp;&nbsp;&#9202;</th>
@@ -29,6 +30,7 @@
                 </thead>
                 <tbody>
                     <tr style="height: 40px;" *ngFor="let track of album.tracks" (click)="trackClicked(track)" class="tracks">
+                        <td style="width: 2%" class="track-number">{{track.track_number}}</td>
                         <td style="width: 45%">
                             {{track.track_name}}</td>
                         <td style="width: 45%">
