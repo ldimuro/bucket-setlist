@@ -16,12 +16,16 @@ export class SpotifyService {
 
   async authorizeSpotifyProfile() {
     const clientId = "3d2321a8c72646e191c8145193fa1cf7"; // clientID provided when creating an app
+    //check the current URL in the search bar and store its parameters
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
 
+    //if the user is not already signed in to the web app, generate a code and token when they agree to the privacy statement
     if (!code) {
       redirectToAuthCodeFlow(clientId);
-    } else {
+    }
+    //if the user is already logged in the search bar will have the code in the URL
+    else {
       const accessToken = await getAccessToken(clientId, code);
       this.setAccessToken(accessToken);
 
@@ -30,12 +34,16 @@ export class SpotifyService {
         this.setProfile(val);
       });
 
+      await this.testAddingSongToPlaylist(accessToken, '6K4t31amVTZDgR3sKmwUJJ');
+
       //corsAccess();
 
       // const searchValue = this.callSpotifySearch(accessToken, 'indexical reminder');
       // console.log(searchValue);
 
       // populateUI(profile);
+
+
 
       return profile;
 
@@ -70,6 +78,19 @@ export class SpotifyService {
     });
 
     return await result.json();
+  }
+
+  async testAddingSongToPlaylist(token: string, trackID: string)
+  {
+    const spotifyEndpoint: string = 'https://api.spotify.com/v1/playlists/';
+    const playlistID: string = '5eJvHzeYF2BTaPGqfOoukM/';
+    const trackToAdd: string = 'tracks?uris=spotify%3Atrack%3A' + trackID;
+    const urlToFetch: string = spotifyEndpoint + playlistID + trackToAdd;
+
+    const result = await fetch(urlToFetch, {
+      method: "POST", headers: {Authorization: `Bearer ${token}`}
+    });
+
   }
 
   getAccessToken() {
@@ -129,10 +150,9 @@ async function corsAccess() {
 }
 
 
-
-//I was getting errors when I was putting this in the Init function, unsure if it is supposed to go here
-//Redirect the user to the Spotify authorization page based on their clientID
+//Redirect the user to the Spotify authorization page
 export async function redirectToAuthCodeFlow(clientId: string) {
+  //ran
   const verifier = generateCodeVerifier(128);
   const challenge = await generateCodeChallenge(verifier);
 
@@ -144,10 +164,14 @@ export async function redirectToAuthCodeFlow(clientId: string) {
   params.append("response_type", "code");
   //this URI needs to be added into the list on the Spotify Dev page, this is where they will be redirected after loggin in
   params.append("redirect_uri", "http://localhost:4200/callback");
-  params.append("scope", "user-read-private user-read-email");
+  //scope is a list of permissions that we're requesting from the user (all scopes need to be included when moving to next stage of production)
+  //user-read-private: gives us access to the user's subscription details (allows for Search and Get Current User's Profile)
+  //user-read-email: gives us access to the user's real email address (allows for Get Current User's Profile)
+  params.append("scope", "user-read-private user-read-email playlist-modify-public playlist-modify-private");
   params.append("code_challenge_method", "S256");
   params.append("code_challenge", challenge);
 
+  //this will load the privacy statement page for the user bsed on the previously generated parameters
   document.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
 }
 
