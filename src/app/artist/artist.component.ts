@@ -55,17 +55,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
     await this.getData();
 
     // If user selected an album, jump to that album in the page
-    // console.log('JUMP TO: ', this.albumID);
-    // const jump_to_album = await this.waitForElm(`.album_${this.albumID}`) as HTMLElement;
-    // console.log(jump_to_album);
-    // const jump_to_album = document.getElementsByClassName(`.album_${this.albumID}`)[0];
-    // jump_to_album.scrollIntoView(true);
-
-    // this.waitForElm(`.album_${this.albumID}`).then((elm) => {
-    //   console.log('Element is ready: ', elm);
-    // });
-
-    
+    this.waitForElm(`.album_${this.albumID}`).then((elm: HTMLElement) => {
+      elm.scrollIntoView(true);
+    });
   }
 
   async getData() {
@@ -82,7 +74,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       if (keyA < keyB) return 1;
       return 0;
     });
-    
+
     this.albums.forEach(async album => {
       const tracks = await this.getAllTracks(album);
 
@@ -97,10 +89,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
         album.tracks = tracks;
       }
     });
-
-    // const jump_to_album = document.getElementsByClassName(`.album_${this.albumID}`)[0];
-    // console.log(jump_to_album);
-    // jump_to_album.scrollIntoView(true);
   }
 
   async getArtist(artist_id: string) {
@@ -244,25 +232,25 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   // Waits for the search input/button to render before programmatically entering ID and clicking "Get Data"
   // https://stackoverflow.com/questions/5525071/how-to-wait-until-an-element-exists
-  // waitForElm(selector) {
-  //   return new Promise(resolve => {
-  //     if (document.querySelector(selector)) {
-  //       return resolve(document.querySelector(selector));
-  //     }
+  waitForElm(selector) {
+    return new Promise(resolve => {
+      if (document.querySelector(selector)) {
+        return resolve(document.querySelector(selector));
+      }
 
-  //     const observer = new MutationObserver(mutations => {
-  //       if (document.querySelector(selector)) {
-  //         resolve(document.querySelector(selector));
-  //         observer.disconnect();
-  //       }
-  //     });
+      const observer = new MutationObserver(mutations => {
+        if (document.querySelector(selector)) {
+          resolve(document.querySelector(selector));
+          observer.disconnect();
+        }
+      });
 
-  //     observer.observe(document.body, {
-  //       childList: true,
-  //       subtree: true
-  //     });
-  //   });
-  // }
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    });
+  }
 
   msToTime(duration) {
     let seconds: any = Math.floor((duration / 1000) % 60);
