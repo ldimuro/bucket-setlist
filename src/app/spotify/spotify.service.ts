@@ -76,8 +76,15 @@ export class SpotifyService {
     return await result.json();
   }
 
-  async getAlbumsOfArtist(token: string, artist_id: string) {
-    const albumsURL: string = `https://api.spotify.com/v1/artists/${artist_id}/albums?include_groups=album,single&limit=50`;
+  async getAlbumsOfArtist(token: string, artist_id: string, next_url?: string) {
+    let albumsURL: string;
+    if (next_url) {
+      albumsURL = next_url;
+    }
+    else {
+      albumsURL = `https://api.spotify.com/v1/artists/${artist_id}/albums?include_groups=album,single,compilation&limit=50`;
+    }
+
     const result = await fetch(albumsURL, {
       method: "GET", headers: { Authorization: `Bearer ${token}` }
     });

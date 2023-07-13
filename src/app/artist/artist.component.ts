@@ -54,8 +54,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
     await this.getData();
 
-    console.log('getData finished');
-
     // If user selected an album, jump to that album in the page
     // console.log('JUMP TO: ', this.albumID);
     // const jump_to_album = await this.waitForElm(`.album_${this.albumID}`) as HTMLElement;
@@ -74,8 +72,17 @@ export class ArtistComponent implements OnInit, OnDestroy {
     this.artist = await this.getArtist(this.artistID);
 
     this.albums = await this.getAllAlbums(this.artistID);
-    // this.albums.sort((a, b) => (a.release_date as any) - (b.release_date as any));
-
+    console.log(`ALBUMS OF ${this.artist.artist_name}: `, this.albums);
+    // Sort all releases by release_date
+    this.albums.sort(function(a, b) {
+      var keyA = new Date(a.release_date),
+        keyB = new Date(b.release_date);
+      // Compare the 2 dates
+      if (keyA > keyB) return -1;
+      if (keyA < keyB) return 1;
+      return 0;
+    });
+    
     this.albums.forEach(async album => {
       const tracks = await this.getAllTracks(album);
 
@@ -118,16 +125,16 @@ export class ArtistComponent implements OnInit, OnDestroy {
     return artist;
   }
 
-  async getAllAlbums(artist_id: string) {
+  async getAllAlbums(artist_id: any, next_url?: string, additional_albums?: any[]) {
     let all_albums = [];
-    await this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), artist_id).then(async data => {
+    await this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), artist_id, next_url).then(async data => {
 
       if (data['error']) {
         this.mainSvc.toError.next({ status: data['error']['status'], message: data['error']['message'], component: 'ArtistComponent', function: 'getAlbumsOfArtist()' });
         this.router.navigate(['/search']);
       }
       else {
-        const artist_albums: Album[] = [];
+        let artist_albums: Album[] = [];
         data.items.forEach(album => {
           let obj: Album = {
             album_name: album.name,
@@ -149,7 +156,18 @@ export class ArtistComponent implements OnInit, OnDestroy {
           artist_albums.push(obj);
         });
 
-        console.log(`ALBUMS OF ${this.artist.artist_name}: `, artist_albums);
+        // If API call contains 'next' value, that means that the rest of the values must
+        // be obtained recursively
+        if (data.next) {
+          additional_albums = await this.getAllAlbums(artist_id, data.next, artist_albums);
+
+          if (artist_albums.length > 0) {
+            artist_albums = [...artist_albums, ...additional_albums]
+          }
+          else {
+            artist_albums = additional_albums;
+          }
+        }
 
         all_albums = artist_albums;
       }
