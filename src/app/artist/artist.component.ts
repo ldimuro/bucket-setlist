@@ -3,6 +3,7 @@ import { SpotifyService } from '../spotify/spotify.service';
 import { Album, Artist, Track } from '../song-model';
 import { BucketSetlistService } from '../bucket-setlist.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-artist',
@@ -63,8 +64,10 @@ export class ArtistComponent implements OnInit, OnDestroy {
   async getData() {
     this.artist = await this.getArtist(this.artistID);
 
+    // GET ALL ALBUM DATA
     this.albums = await this.getAllAlbums(this.artistID);
     console.log(`ALBUMS OF ${this.artist.artist_name}: `, this.albums);
+
     // Sort all releases by release_date
     this.albums.sort(function(a, b) {
       var keyA = new Date(a.release_date),
@@ -75,7 +78,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       return 0;
     });
 
-    this.albums.forEach(async album => {
+    this.albums.forEach(async (album: Album) => {
       const tracks = await this.getAllTracks(album);
 
       // If album has 'tracks' value, that means that they have been recursively added, and just need to add in tracks from the final call
@@ -88,6 +91,19 @@ export class ArtistComponent implements OnInit, OnDestroy {
       else {
         album.tracks = tracks;
       }
+
+      // Calculate runtime of each album, and format each track runtime
+      let total_ms: any = 0;
+      album.tracks.forEach((track: Track) => {
+        const temp_duration = track.duration;
+        total_ms += temp_duration;
+        track.duration = this.msToTime(temp_duration);
+      });
+      album.runtime = this.msToTimeLong(total_ms);
+
+      // Format release_date correctly
+      const temp_date = album.release_date;
+      album.release_date = this.formatDate(temp_date, album.release_date_precision);
     });
   }
 
@@ -182,7 +198,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
             artist: track.artists[0].name,
             album: album.album_name,
             cover_art: album.cover_art,
-            length: this.msToTime(track.duration_ms),
+            duration: track.duration_ms,
             preview_audio: track.preview_url,
             track_number: track.track_number,
             id: track.id
@@ -262,6 +278,34 @@ export class ArtistComponent implements OnInit, OnDestroy {
     seconds = (seconds < 10) ? "0" + seconds : seconds;
 
     return (hours === "00" ? '' : hours + ":") + minutes + ":" + seconds;
+  }
+
+  msToTimeLong(duration) {
+    let seconds: any = Math.floor((duration / 1000) % 60);
+    let minutes: any = Math.floor((duration / (1000 * 60)) % 60);
+    let hours: any = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+    if (hours > 0) {
+      return `${hours} hr${hours.length > 1 ? 's' : ''} ${minutes} min`
+    }
+    else {
+      return `${minutes} min ${seconds} sec`;
+    }
+  }
+
+  formatDate(release_date: string, precision: string) {
+    let date_format;
+    let locale = 'en-US';
+    switch(precision) {
+      case 'day':
+        date_format = 'longDate';
+        return formatDate(release_date, date_format, locale);
+      case 'month':
+        date_format = 'MMMM y';
+        return formatDate(release_date, date_format, locale);
+      default:
+        return release_date;
+    }
   }
 
   ngOnDestroy(): void {

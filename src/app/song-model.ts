@@ -3,7 +3,7 @@ export class Track {
     artist?: string;
     album: string;
     cover_art: any;
-    length: number | string;
+    duration: number | string;
     preview_audio: string;
     track_number?: number;
     id: string;
@@ -25,6 +25,7 @@ export class Album {
     release_date_precision: string;
     total_tracks: number;
     tracks?: any[]
+    runtime?: any;
 }
 
 export class Image {

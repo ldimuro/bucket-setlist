@@ -101,7 +101,7 @@ export class SearchComponent implements OnInit {
               track_name: track.name,
               album: track.album.name,
               cover_art: track.album.images[0].url,
-              length: track.duration_ms,
+              duration: track.duration_ms,
               preview_audio: track.preview_url,
               id: track.id
             }

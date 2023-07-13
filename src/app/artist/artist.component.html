@@ -13,8 +13,9 @@
                 <img src="{{album.cover_art}}" width="200px" height="200px">
                 <div>
                     <h2 style="padding-left: 20px;">{{album.album_name}}</h2>
-                    <p style="padding-left: 20px;">{{album.release_date | date: longDate}}&nbsp; &#8226;
-                        &nbsp;{{album.total_tracks}} songs</p>
+                    <!-- <p style="padding-left: 20px;">{{album.release_date | date: longDate}}</p> -->
+                    <p style="padding-left: 20px;">{{album.release_date}}</p>
+                    <p style="padding-left: 20px">{{album.total_tracks}} song{{album.total_tracks > 1 ? 's' : ''}} &nbsp; &#8226; &nbsp;{{album.runtime}}</p>
                 </div>
             </div>
 
@@ -35,7 +36,7 @@
                             {{track.track_name}}</td>
                         <td style="width: 45%">
                             {{track.artist}}</td>
-                        <td style="width: 5%">{{track.length}}</td>
+                        <td style="width: 5%">{{track.duration}}</td>
                     </tr>
                 </tbody>
             </table>
