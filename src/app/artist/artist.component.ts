@@ -68,15 +68,15 @@ export class ArtistComponent implements OnInit, OnDestroy {
     this.albums = await this.getAllAlbums(this.artistID);
     console.log(`ALBUMS OF ${this.artist.artist_name}: `, this.albums);
 
-    // Sort all releases by release_date
-    this.albums.sort(function(a, b) {
-      var keyA = new Date(a.release_date),
-        keyB = new Date(b.release_date);
-      // Compare the 2 dates
-      if (keyA > keyB) return -1;
-      if (keyA < keyB) return 1;
-      return 0;
-    });
+    // Sort all albums by release_date
+    // this.albums.sort(function (a, b) {
+    //   var keyA = new Date(a.release_date),
+    //     keyB = new Date(b.release_date);
+    //   // Compare the 2 dates
+    //   if (keyA > keyB) return -1;
+    //   if (keyA < keyB) return 1;
+    //   return 0;
+    // });
 
     this.albums.forEach(async (album: Album) => {
       const tracks = await this.getAllTracks(album);
@@ -186,9 +186,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
     await this.spotifySvc.getTracksOfAlbum(this.spotifySvc.getAccessToken(), album.id, next_url).then(async val => {
       // console.log('TRACKS FROM ', album.album_name, ': ', val);
 
+      // await this.sleep(10);
+
       if (val['error']) {
         this.mainSvc.toError.next({ status: val['error']['status'], message: val['error']['message'], component: 'ArtistComponent', function: 'getTracksOfAlbums()' });
         this.router.navigate(['/search']);
+
+        console.log('FAILED ON SEARCH FOR ALBUM: ', album, ' | NEXT_URL: ', next_url, ' | ADDITIONAL TRACKS: ', additional_tracks);
+        return;
       }
       else if (val) {
         let tracks = [];
@@ -296,7 +301,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   formatDate(release_date: string, precision: string) {
     let date_format;
     let locale = 'en-US';
-    switch(precision) {
+    switch (precision) {
       case 'day':
         date_format = 'longDate';
         return formatDate(release_date, date_format, locale);
@@ -306,6 +311,10 @@ export class ArtistComponent implements OnInit, OnDestroy {
       default:
         return release_date;
     }
+  }
+
+  sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   ngOnDestroy(): void {

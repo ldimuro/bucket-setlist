@@ -26,7 +26,9 @@ export class SpotifyService {
     }
     //if the user is already logged in the search bar will have the code in the URL
     else {
-      const accessToken = await getAccessToken(clientId, code);
+      const accessToken = await getAccessToken(clientId, code).then(data =>{
+        console.log(data);
+      });
 
       this.setAccessToken(accessToken);
 
@@ -72,9 +74,11 @@ export class SpotifyService {
       body: params
     });
   
-    const { access_token } = await result.json();
 
-    return access_token;
+    // const { access_token } = await result.json();
+    const test_result = await result.json();
+
+    return test_result;
   }
 
   async callSpotifySearch(token: string, searchVal: string, filterVal: string): Promise<SearchResult> {
@@ -207,11 +211,14 @@ export async function getAccessToken(clientId: string, code: string): Promise<st
     body: params
   });
 
-  const { access_token } = await result.json();
+  // const { access_token } = await result.json();
   //const { refresh_token } = await result.json();
 
+  const test_result = await result.json();
+  return test_result;
+
   //return refresh_token;
-  return access_token;
+  // return access_token;
 }
 
 //call the Web API to get the user's data

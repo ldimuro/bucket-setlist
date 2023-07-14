@@ -26,9 +26,11 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.chosen_track = val;
           console.log('CHOSEN TRACK: ', this.chosen_track);
 
-          const refreshedToken = await this.spotifySvc.refreshAccessToken();
+          const refreshedToken = await this.spotifySvc.refreshAccessToken().then(data => {
+            console.log(data);
+          });
 
-          this.addSongToPlaylist(refreshedToken, this.chosen_track.id);
+          // this.addSongToPlaylist(refreshedToken, this.chosen_track.id);
         }
     });
 
