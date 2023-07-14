@@ -26,11 +26,18 @@ export class SpotifyService {
     }
     //if the user is already logged in the search bar will have the code in the URL
     else {
-      const accessToken = await getAccessToken(clientId, code).then(data =>{
-        console.log(data);
-      });
+      // const accessToken = await getAccessToken(clientId, code);
+      let accessToken;
+      let intial_refresh_token;
+      // await getAccessToken(clientId, code).then(credentials => {
+      //   accessToken = credentials['access_token'];
+      //   intial_refresh_token = credentials['refresh_token'];
 
-      this.setAccessToken(accessToken);
+      //   this.setAccessToken(accessToken);
+      //   this.setInitialRefreshToken(initial_refresh_token);
+      // });
+
+      
 
       const profile = await fetchProfile(accessToken).then(val => {
         const search_result = val;
