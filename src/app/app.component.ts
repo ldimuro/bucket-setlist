@@ -19,6 +19,7 @@ export class AppComponent implements OnInit{
 
     // const profile = this.spotifyService.authorizeSpotifyProfile();
     await this.spotifyService.authorizeSpotifyProfile();
+
     
   }
 }

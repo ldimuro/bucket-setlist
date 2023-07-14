@@ -27,6 +27,7 @@ export class SpotifyService {
     //if the user is already logged in the search bar will have the code in the URL
     else {
       const accessToken = await getAccessToken(clientId, code);
+
       this.setAccessToken(accessToken);
 
       const profile = await fetchProfile(accessToken).then(val => {
@@ -55,6 +56,25 @@ export class SpotifyService {
       //I don't think we need this in the final version, but it'll be useful to see if the login is working
 
     }
+  }
+
+  async refreshAccessToken() {
+    const refreshToken: string = "AQDw7Ki9Uio7uOtMXpJDT0gFRcKcDLWJdbpMNCo-BreyCAgEqIePRvuEbdJisrT0g1ZbZn6NL0dfBGXrx5hDCZl2ZGxTakgB-VlHUK_QxJ_cnrPngqf7lX5RVU5MoCiyc8w";
+
+    const params = new URLSearchParams();
+    params.append("grant_type", "refresh_token");
+    params.append("refresh_token", refreshToken);
+    params.append("client_id", "3d2321a8c72646e191c8145193fa1cf7");
+  
+    const result = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params
+    });
+  
+    const { access_token } = await result.json();
+
+    return access_token;
   }
 
   async callSpotifySearch(token: string, searchVal: string, filterVal: string): Promise<SearchResult> {
@@ -188,6 +208,9 @@ export async function getAccessToken(clientId: string, code: string): Promise<st
   });
 
   const { access_token } = await result.json();
+  //const { refresh_token } = await result.json();
+
+  //return refresh_token;
   return access_token;
 }
 

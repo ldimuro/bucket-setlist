@@ -21,11 +21,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.mainSvc.toHomePage
       .pipe(first())
-      .subscribe(val => {
+      .subscribe(async val => {
         if (val) {
           this.chosen_track = val;
           console.log('CHOSEN TRACK: ', this.chosen_track);
-          this.addSongToPlaylist(this.spotifySvc.accessToken, this.chosen_track.id);
+
+          const refreshedToken = await this.spotifySvc.refreshAccessToken();
+
+          this.addSongToPlaylist(refreshedToken, this.chosen_track.id);
         }
     });
 
@@ -37,7 +40,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     const spotifyEndpoint: string = 'https://api.spotify.com/v1/playlists/';
     //make sure that the playlist in home.component.html matches this one
     const playlistID: string = '5eJvHzeYF2BTaPGqfOoukM/';
-    //const playlistID: string = '1vmD1bQuewjmMC635Mr41j/';
     const trackToAdd: string = 'tracks?uris=spotify%3Atrack%3A' + trackID;
     const urlToFetch: string = spotifyEndpoint + playlistID + trackToAdd;
 
