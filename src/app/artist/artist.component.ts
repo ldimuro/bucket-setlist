@@ -308,7 +308,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       case 'month':
         date_format = 'MMMM y';
         return formatDate(release_date, date_format, locale);
-      default:
+      default: // year
         return release_date;
     }
   }

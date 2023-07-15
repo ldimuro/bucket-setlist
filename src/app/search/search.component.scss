@@ -27,7 +27,8 @@
 }
 
 .tab-selected {
-    background-color: rgb(135, 225, 255);
+    background-color: rgb(135, 225, 255) !important;
+    cursor: default!important;
 }
 
 .tabs {

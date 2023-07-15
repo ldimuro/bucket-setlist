@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private spotifySvc: SpotifyService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.mainSvc.toHomePage
       .pipe(first())
       .subscribe(async val => {
@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
     });
 
-    this.profile = this.spotifySvc.getProfile();
+    this.profile = await this.spotifySvc.getProfile();
   }
 
   async addSongToPlaylist(token: string, trackID: string)

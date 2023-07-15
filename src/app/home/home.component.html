@@ -2,7 +2,7 @@
     <div class="center">
         <div>
             <div>
-                <h1 style="font-weight: lighter;">Thank you <b>{{profile.display_name}}</b></h1>
+                <h1 style="font-weight: lighter;">Thank you <b>{{profile?.display_name}}</b></h1>
             </div>
             <div>
                 <h2 style="font-weight: lighter;">You have chosen <b>{{chosen_track.track_name}}</b> by
@@ -11,8 +11,8 @@
             <img width=200px; height=200px; src="{{chosen_track.cover_art}}">
         </div>
 
-        <div style="margin-top: 40px">
-            <iframe style="border-radius:12px"
+        <div style="margin-top: 40px;">
+            <iframe style="border-radius:12px;" id="playlist"
                 src="https://open.spotify.com/embed/playlist/5eJvHzeYF2BTaPGqfOoukM?utm_source=generator&theme=0"
                 width="60%" height="400px" frameBorder="0" allowfullscreen=""
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
