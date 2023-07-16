@@ -27,10 +27,6 @@ export class SpotifyService {
     //if the user is already logged in the search bar will have the code in the URL
     else {
       const accessToken = await getAccessToken(clientId, code);
-      
-      //use this code to print the refresh token to the console, make sure to edit method return as well
-      //const accessToken = await getAccessToken(clientId, code);
-      //console.log("RefreshToken: " + accessToken);
 
       this.setAccessToken(accessToken);
 
@@ -63,14 +59,10 @@ export class SpotifyService {
   }
 
   async refreshAccessToken(currentRefreshToken: string) {
-    var refreshToken = "AQBbxn5cqhNGRgZLI_y6uoMiwKmie6zttxCH5x34pwmAjVoI_wh-tPcnOUCRv9se5kvepqIE0ek89vN1lUl995w1DXSeozHilEqSffp6NImMz0zwTTMfn9vEUDRbs8MvulE";
-
-    if(currentRefreshToken != refreshToken)
-    { refreshToken = currentRefreshToken; }
-
+  
     const params = new URLSearchParams();
     params.append("grant_type", "refresh_token");
-    params.append("refresh_token", refreshToken);
+    params.append("refresh_token", currentRefreshToken);
     params.append("client_id", "3d2321a8c72646e191c8145193fa1cf7");
   
     const result = await fetch("https://accounts.spotify.com/api/token", {
@@ -214,12 +206,9 @@ export async function getAccessToken(clientId: string, code: string): Promise<st
     body: params
   });
 
-  //Swap the following lines of code to get the refresh token instead of the access token
-
-  const { access_token } = await result.json();
+  const { access_token, refresh_token } = await result.json();
+  console.log("Refresh Token: " + refresh_token);
   return access_token;
-  //const { refresh_token } = await result.json();
-  //return refresh_token;
   
 }
 
