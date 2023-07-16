@@ -20,7 +20,7 @@ export class FirebaseService {
 
   app;
   database;
-  refreshToken;
+  refresh_token;
 
   constructor() { }
 
@@ -30,13 +30,13 @@ export class FirebaseService {
     const analytics = getAnalytics(this.app);
   }
 
-  setRefreshToken(token: string) {
+  async updateRefreshToken(token: string) {
     try {
-      set(ref(this.database, '/credentials/refresh_token'), token);
-      this.refreshToken = this.refreshToken;
+      update(ref(this.database, '/credentials/'), { refresh_token: token });
+      this.refresh_token = token;
     }
     catch (ex) {
-      // this.appSvc.setErrors(ex);
+      console.error(ex);
     }
   }
 
@@ -50,10 +50,8 @@ export class FirebaseService {
       } else {
         refresh_token = null;
       }
-      // this.appSvc.setErrors({passed: 'GOT USER, ' + retrieved_user});
     }).catch((error) => {
       console.error(error);
-      // this.appSvc.setErrors(error);
       return error;
     });
 

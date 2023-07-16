@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           });
 
 
-          await this.firebaseSvc.setRefreshToken('test123');
+          await this.firebaseSvc.updateRefreshToken('test123');
 
           await this.firebaseSvc.getRefreshToken().then(data => {
             console.log('GOT REFRESH TOKEN: ', data);
