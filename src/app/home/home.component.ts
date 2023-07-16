@@ -32,14 +32,15 @@ export class HomeComponent implements OnInit, OnDestroy {
             console.log(data);
           });
 
-
           await this.firebaseSvc.updateRefreshToken('test123');
 
+          let refresh_token;
           await this.firebaseSvc.getRefreshToken().then(data => {
             console.log('GOT REFRESH TOKEN: ', data);
+            refresh_token = data;
           });
 
-          // this.addSongToPlaylist(refreshedToken, this.chosen_track.id);
+          this.addSongToPlaylist(refresh_token, this.chosen_track.id);
         }
     });
 
