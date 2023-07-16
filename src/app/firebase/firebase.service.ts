@@ -20,6 +20,7 @@ export class FirebaseService {
 
   app;
   database;
+  refreshToken;
 
   constructor() { }
 
@@ -31,10 +32,31 @@ export class FirebaseService {
 
   setRefreshToken(token: string) {
     try {
-      set(ref(this.database, '/credentials/refreshToken'), token);
+      set(ref(this.database, '/credentials/refresh_token'), token);
+      this.refreshToken = this.refreshToken;
     }
     catch (ex) {
       // this.appSvc.setErrors(ex);
     }
+  }
+
+  async getRefreshToken() {
+    const dbRef = ref(this.database);
+    let refresh_token;
+
+    await get(child(dbRef, '/credentials/refresh_token')).then((snapshot) => {
+      if (snapshot.exists()) {
+        refresh_token = snapshot.val();
+      } else {
+        refresh_token = null;
+      }
+      // this.appSvc.setErrors({passed: 'GOT USER, ' + retrieved_user});
+    }).catch((error) => {
+      console.error(error);
+      // this.appSvc.setErrors(error);
+      return error;
+    });
+
+    return refresh_token;
   }
 }
