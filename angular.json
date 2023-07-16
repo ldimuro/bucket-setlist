@@ -81,8 +81,12 @@
           "configurations": {
             "production": {
               "browserTarget": "bucket-setlist:build:production"
+            },
+            "development": {
+              "browserTarget": "bucket-setlist:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
