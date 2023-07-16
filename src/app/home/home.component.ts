@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BucketSetlistService } from '../bucket-setlist.service';
 import { first } from 'rxjs/operators';
 import { SpotifyService, getAccessToken } from '../spotify/spotify.service';
+import { FirebaseService } from '../firebase/firebase.service';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +16,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private mainSvc: BucketSetlistService,
-    private spotifySvc: SpotifyService
+    private spotifySvc: SpotifyService,
+    private firebaseSvc: FirebaseService
   ) { }
 
   async ngOnInit() {
@@ -29,6 +31,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           const refreshedToken = await this.spotifySvc.refreshAccessToken().then(data => {
             console.log(data);
           });
+
+
+          this.firebaseSvc.setRefreshToken('test123');
 
           // this.addSongToPlaylist(refreshedToken, this.chosen_track.id);
         }

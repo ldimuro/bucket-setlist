@@ -6,11 +6,11 @@
     <br>
 
     <div class="center" style="margin-bottom: 20px;">
-        <form #search="ngForm" autocomplete="off" (ngSubmit)="searchButtonClicked()">
+        <!-- <form #search="ngForm" autocomplete="off" (ngSubmit)="searchButtonClicked()"> -->
             <input class="searchBar" placeholder="Enter a song/artist/album" name="searchBar"
                 [(ngModel)]="search_val" (input)="searchValueChanged($event)">
             <!-- <input type="Submit" value="Find" [disabled]="!search_val" style="padding: 5px 20px 5px 20px; margin-left: 10px;"> -->
-        </form>
+        <!-- </form> -->
     </div>
 
     <div *ngIf="search_val" class="center tabs">

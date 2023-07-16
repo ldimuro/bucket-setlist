@@ -25,7 +25,7 @@ export class SearchComponent implements OnInit {
   total_albums/*: Album[] */ = [];
   confirmation_modal_open = false;
   search_val;
-  current_tab = Tabs.Track;
+  current_tab: Tabs | string = Tabs.Track;
   audio_player;
   error: ErrorMessage;
   transaction_valid;
@@ -215,7 +215,7 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  tabChanged(tab: Tabs) {
+  tabChanged(tab: Tabs | string) {
     this.current_tab = tab;
   }
 
