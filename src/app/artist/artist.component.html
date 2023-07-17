@@ -42,6 +42,11 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- If all albums weren't retrieved in 1 batch, "Load More" will load the next batch -->
+        <div *ngIf="albums.length > 0 && albums[albums.length - 1]['next_batch']" class="center-div" style="margin-bottom: 50px; margin-top: 50px;">
+            <button class="load-more" (click)="loadMoreAlbums(artist.id, albums[albums.length - 1]['next_batch'])">LOAD MORE</button>
+        </div>
     </div>
 </div>
 
