@@ -58,6 +58,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
           this.show_playlist = true;
 
+          await this.firebaseSvc.postSelectedTrack(this.chosen_track);
+
         }
       });
 

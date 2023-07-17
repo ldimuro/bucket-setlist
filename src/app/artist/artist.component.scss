@@ -36,6 +36,12 @@ table {
     cursor: pointer;
 }
 
+.track-is-taken, .track-is-taken:hover {
+    opacity: 0.2;
+    cursor: default !important;
+    background-color: white !important;
+}
+
 .album-info {
     display: flex;
     align-items: center;

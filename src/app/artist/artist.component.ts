@@ -4,6 +4,7 @@ import { Album, Artist, Track } from '../song-model';
 import { BucketSetlistService } from '../bucket-setlist.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { formatDate } from '@angular/common';
+import { FirebaseService } from '../firebase/firebase.service';
 
 @Component({
   selector: 'app-artist',
@@ -14,6 +15,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   artist: Artist;
   albums: Album[] = [];
+  playlist_tracks: Track[];
   selected_album;
   confirmation_modal_open = false;
 
@@ -26,7 +28,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
     private spotifySvc: SpotifyService,
     private mainSvc: BucketSetlistService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private firebaseSvc: FirebaseService
   ) { }
 
   async ngOnInit() {
@@ -40,6 +43,13 @@ export class ArtistComponent implements OnInit, OnDestroy {
         this.albumID = params['albumid'];
       }
     }));
+
+    this.firebaseSvc.toPlaylistTracks.subscribe(val => {
+      if (val) {
+        this.playlist_tracks = val;
+        console.log('PLAYLIST TRACKS: ', this.playlist_tracks);
+      }
+    });
 
     // Clicking "Cancel" inside Track Confirmation Modal
     this.subscriptions.push(this.mainSvc.closeTrackConfirmationModal.subscribe(val => {
@@ -219,6 +229,11 @@ export class ArtistComponent implements OnInit, OnDestroy {
           });
           trackObj.artist = artists;
 
+          // If track exists in master playlist, mark it as taken
+          if (this.playlist_tracks[trackObj.id]) {
+            trackObj.is_taken = true;
+          }
+
           tracks.push(trackObj);
         });
 
@@ -243,12 +258,19 @@ export class ArtistComponent implements OnInit, OnDestroy {
     return all_tracks;
   }
 
-  trackClicked(track: any) {
-    console.log('TRACK CLICKED: ', track);
-    this.mainSvc.toTrackConfirmationModal.next(track);
-    this.confirmation_modal_open = true;
+  trackClicked(track: Track) {
+    if (!track.is_taken) {
+      console.log('TRACK CLICKED: ', track);
+      this.mainSvc.toTrackConfirmationModal.next(track);
+      this.confirmation_modal_open = true;
 
-    document.getElementById(`artistComponent`).classList.add('blur-background_in');
+      document.getElementById(`artistComponent`).classList.add('blur-background_in');
+    }
+    else {
+      alert('This song has already been selected by someone else');
+    }
+
+    return;
   }
 
   // Waits for the search input/button to render before programmatically entering ID and clicking "Get Data"

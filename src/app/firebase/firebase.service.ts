@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase, ref, child, push, update, set, get } from "firebase/database";
+import { Track } from '../song-model';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +23,8 @@ export class FirebaseService {
   app;
   database;
   refresh_token;
+  playlist_tracks: Track[];
+  toPlaylistTracks = new BehaviorSubject(undefined);
 
   constructor() { }
 
@@ -28,6 +32,11 @@ export class FirebaseService {
     this.app = initializeApp(this.firebaseConfig);
     this.database = getDatabase(this.app);
     const analytics = getAnalytics(this.app);
+
+    this.getPlaylistTracks().then(val => {
+      this.playlist_tracks = val;
+      this.toPlaylistTracks.next(this.playlist_tracks);
+    });
   }
 
   async updateRefreshToken(token: string) {
@@ -38,6 +47,33 @@ export class FirebaseService {
     catch (ex) {
       console.error(ex);
     }
+  }
+
+  async postSelectedTrack(track: Track) {
+    try {
+      set(ref(this.database, `/playlist/${track.id}`), track);
+    }
+    catch (ex) {
+      console.error(ex);
+    }
+  }
+
+  async getPlaylistTracks() {
+    const dbRef = ref(this.database);
+    let tracks: Track[];
+
+    await get(child(dbRef, '/playlist/')).then((snapshot) => {
+      if (snapshot.exists()) {
+        tracks = snapshot.val();
+      } else {
+        tracks = null;
+      }
+    }).catch((error) => {
+      console.error(error);
+      return error;
+    });
+
+    return tracks;
   }
 
   async getRefreshToken() {
@@ -57,4 +93,5 @@ export class FirebaseService {
 
     return refresh_token;
   }
+
 }

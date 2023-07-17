@@ -118,6 +118,12 @@ table {
     border: lightgray solid 1px;
 }
 
+.track-is-taken, .track-is-taken:hover {
+    opacity: 0.2;
+    cursor: default !important;
+    background-color: white !important;
+}
+
 .album:hover {
     opacity: 0.5;
     cursor: pointer;
