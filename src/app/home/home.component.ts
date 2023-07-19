@@ -34,7 +34,8 @@ export class HomeComponent implements OnInit, OnDestroy {
             1) Comment out the firebase get/set
             2) Log into the bucket setlist web app as Clou Diller to have Spotify generate a new refresh_token
             3) Uncomment the firebase setter
-            3) Have Spotify generate a new refresh token for Clou Diller (we can do this by having Clou make any kind of call to the api) and it will be stored in firebase
+            3) Have Spotify generate a new refresh token for Clou Diller and it will be stored in firebase
+            (we can do this by having Clou make any kind of call to the api but it has to be on the Bucket Setlist app)
             4) Uncomment the firebase getter and now the cycle should be set
           */
 
