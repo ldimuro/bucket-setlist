@@ -7,6 +7,7 @@ export class Track {
     preview_audio: string;
     track_number?: number;
     id: string;
+    is_taken?: boolean;
 }
 
 export class Artist {

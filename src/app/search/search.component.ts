@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { SpotifyService } from '../spotify/spotify.service';
 import { BucketSetlistService } from '../bucket-setlist.service';
 import { first } from 'rxjs/operators';
+import { FirebaseService } from '../firebase/firebase.service';
 
 export enum Tabs {
   Track = 'track',
@@ -30,16 +31,25 @@ export class SearchComponent implements OnInit {
   error: ErrorMessage;
   transaction_valid;
   isTxnProcessing: boolean;
+  playlist_tracks: Track[];
 
   constructor(
     private router: Router,
     private spotifySvc: SpotifyService,
-    private mainSvc: BucketSetlistService
+    private mainSvc: BucketSetlistService,
+    private firebaseSvc: FirebaseService
   ) { }
 
   async ngOnInit() {
     // const songJSONData = await this.httpClient.get('assets/spotify-simulation-data.json', { responseType: 'json' }).toPromise();
     // const songs: Song[] = songJSONData['data'];
+
+
+    this.firebaseSvc.toPlaylistTracks.subscribe(val => {
+      if (val) {
+        this.playlist_tracks = val;
+      }
+    });
 
     // Clicking "Cancel" inside Track Confirmation Modal
     this.mainSvc.closeTrackConfirmationModal.subscribe(val => {
@@ -116,6 +126,11 @@ export class SearchComponent implements OnInit {
             });
             trackObj.artist = artists;
 
+            // If track exists in master playlist, mark it as taken
+            if (this.playlist_tracks[trackObj.id]) {
+              trackObj.is_taken = true;
+            }
+
             this.total_tracks.push(trackObj);
           });
         }
@@ -189,12 +204,19 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  trackClicked(song: any) {
-    console.log('SONG CLICKED: ', song);
-    this.mainSvc.toTrackConfirmationModal.next(song);
-    this.confirmation_modal_open = true;
+  trackClicked(track: Track) {
+    if (!track.is_taken) {
+      console.log('track CLICKED: ', track);
+      this.mainSvc.toTrackConfirmationModal.next(track);
+      this.confirmation_modal_open = true;
 
-    document.getElementById(`searchComponent`).classList.add('blur-background_in');
+      document.getElementById(`searchComponent`).classList.add('blur-background_in');
+    }
+    else {
+      alert('This song has already been selected by someone else')
+    }
+
+    return;
   }
 
   artistClicked(artist: Artist) {

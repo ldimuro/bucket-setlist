@@ -11,7 +11,7 @@
             <img width=200px; height=200px; src="{{chosen_track.cover_art}}">
         </div>
 
-        <div style="margin-top: 40px;">
+        <div *ngIf="show_playlist" style="margin-top: 40px;">
             <iframe style="border-radius:12px;" id="playlist"
                 src="https://open.spotify.com/embed/playlist/5eJvHzeYF2BTaPGqfOoukM?utm_source=generator&theme=0"
                 width="60%" height="400px" frameBorder="0" allowfullscreen=""

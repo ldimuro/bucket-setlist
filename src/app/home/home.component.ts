@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   chosen_track;
   profile;
+  show_playlist: boolean = false;
 
   constructor(
     private mainSvc: BucketSetlistService,
@@ -52,27 +53,40 @@ export class HomeComponent implements OnInit, OnDestroy {
           await this.firebaseSvc.updateRefreshToken(refresh_token);
 
           await this.addSongToPlaylist(access_token, this.chosen_track.id);
+
+          // Give time for playlist to update before rendering
+          await this.sleep(10);
+
+          this.show_playlist = true;
+
+          await this.firebaseSvc.postSelectedTrack(this.chosen_track);
+
         }
-    });
+      });
 
     this.profile = await this.spotifySvc.getProfile();
   }
 
-  async addSongToPlaylist(token: string, trackID: string)
-  {
-    const spotifyEndpoint: string = 'https://api.spotify.com/v1/playlists/';
-    //make sure that the playlist in home.component.html matches this one
-    const playlistID: string = '5eJvHzeYF2BTaPGqfOoukM/';
-    const trackToAdd: string = 'tracks?uris=spotify%3Atrack%3A' + trackID;
-    const urlToFetch: string = spotifyEndpoint + playlistID + trackToAdd;
+  async addSongToPlaylist(token: string, track_id: string) {
+    const spotify_endpoint: string = 'https://api.spotify.com/v1/playlists/';
+    const playlist_id: string = '5eJvHzeYF2BTaPGqfOoukM/';
+    const track_to_add: string = 'tracks?position=0&uris=spotify%3Atrack%3A' + track_id;
+    const urlToFetch: string = spotify_endpoint + playlist_id + track_to_add;
+
+    console.log('URL: ', urlToFetch);
 
     const result = await fetch(urlToFetch, {
-      method: "POST", headers: {Authorization: `Bearer ${token}`}
+      method: "POST", headers: { Authorization: `Bearer ${token}` }
     });
 
   }
 
+  sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   ngOnDestroy(): void {
+
   }
 
 

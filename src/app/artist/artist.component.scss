@@ -36,6 +36,12 @@ table {
     cursor: pointer;
 }
 
+.track-is-taken, .track-is-taken:hover {
+    opacity: 0.2;
+    cursor: default !important;
+    background-color: white !important;
+}
+
 .album-info {
     display: flex;
     align-items: center;
@@ -82,4 +88,22 @@ table {
     color: rgb(178, 178, 178);
     font-weight: lighter;
     font-size: 80%;
+}
+
+.center-div {
+    justify-content: center;
+    display: flex;
+}
+
+.load-more {
+    padding: 15px 35px;
+    font-size: larger;
+    background-color: white;
+    border: solid black 1.5px;
+    border-radius: 30px;
+}
+
+.load-more:hover {
+    background-color: rgb(223, 237, 255);
+    cursor: pointer;
 }

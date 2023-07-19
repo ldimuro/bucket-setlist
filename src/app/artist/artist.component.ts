@@ -4,6 +4,7 @@ import { Album, Artist, Track } from '../song-model';
 import { BucketSetlistService } from '../bucket-setlist.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { formatDate } from '@angular/common';
+import { FirebaseService } from '../firebase/firebase.service';
 
 @Component({
   selector: 'app-artist',
@@ -14,6 +15,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   artist: Artist;
   albums: Album[] = [];
+  playlist_tracks: Track[];
   selected_album;
   confirmation_modal_open = false;
 
@@ -26,7 +28,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
     private spotifySvc: SpotifyService,
     private mainSvc: BucketSetlistService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private firebaseSvc: FirebaseService
   ) { }
 
   async ngOnInit() {
@@ -40,6 +43,13 @@ export class ArtistComponent implements OnInit, OnDestroy {
         this.albumID = params['albumid'];
       }
     }));
+
+    this.firebaseSvc.toPlaylistTracks.subscribe(val => {
+      if (val) {
+        this.playlist_tracks = val;
+        console.log('PLAYLIST TRACKS: ', this.playlist_tracks);
+      }
+    });
 
     // Clicking "Cancel" inside Track Confirmation Modal
     this.subscriptions.push(this.mainSvc.closeTrackConfirmationModal.subscribe(val => {
@@ -64,9 +74,11 @@ export class ArtistComponent implements OnInit, OnDestroy {
   async getData() {
     this.artist = await this.getArtist(this.artistID);
 
-    // GET ALL ALBUM DATA
-    this.albums = await this.getAllAlbums(this.artistID);
-    console.log(`ALBUMS OF ${this.artist.artist_name}: `, this.albums);
+    // Get album data of the first 50 albums
+    this.albums = await this.getAlbums(this.artistID);
+
+    // Get/parse tracks of the first 50 albums
+    this.albums = await this.parseTracksOfAlbums(this.albums);
 
     // Sort all albums by release_date
     // this.albums.sort(function (a, b) {
@@ -78,33 +90,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     //   return 0;
     // });
 
-    this.albums.forEach(async (album: Album) => {
-      const tracks = await this.getAllTracks(album);
-
-      // If album has 'tracks' value, that means that they have been recursively added, and just need to add in tracks from the final call
-      if (album.tracks) {
-        album.tracks = album.tracks.concat(tracks);
-
-        // Track listings with more than 50 tracks will be out of order, so order by track_number
-        album.tracks.sort((a, b) => a.track_number - b.track_number)
-      }
-      else {
-        album.tracks = tracks;
-      }
-
-      // Calculate runtime of each album, and format each track runtime
-      let total_ms: any = 0;
-      album.tracks.forEach((track: Track) => {
-        const temp_duration = track.duration;
-        total_ms += temp_duration;
-        track.duration = this.msToTime(temp_duration);
-      });
-      album.runtime = this.msToTimeLong(total_ms);
-
-      // Format release_date correctly
-      const temp_date = album.release_date;
-      album.release_date = this.formatDate(temp_date, album.release_date_precision);
-    });
+    console.log(`ALBUMS OF ${this.artist.artist_name}: `, this.albums);
   }
 
   async getArtist(artist_id: string) {
@@ -129,15 +115,20 @@ export class ArtistComponent implements OnInit, OnDestroy {
     return artist;
   }
 
-  async getAllAlbums(artist_id: any, next_url?: string, additional_albums?: any[]) {
+  async getAlbums(artist_id: any, next_url?: string) {
     let all_albums = [];
-    await this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), artist_id, next_url).then(async data => {
+    let next_batch;
 
+    await this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), artist_id, next_url).then(async data => {
       if (data['error']) {
         this.mainSvc.toError.next({ status: data['error']['status'], message: data['error']['message'], component: 'ArtistComponent', function: 'getAlbumsOfArtist()' });
         this.router.navigate(['/search']);
       }
       else {
+        if (data.next) {
+          next_batch = data.next;
+        }
+
         let artist_albums: Album[] = [];
         data.items.forEach(album => {
           let obj: Album = {
@@ -160,22 +151,15 @@ export class ArtistComponent implements OnInit, OnDestroy {
           artist_albums.push(obj);
         });
 
-        // If API call contains 'next' value, that means that the rest of the values must
-        // be obtained recursively
-        if (data.next) {
-          additional_albums = await this.getAllAlbums(artist_id, data.next, artist_albums);
-
-          if (artist_albums.length > 0) {
-            artist_albums = [...artist_albums, ...additional_albums]
-          }
-          else {
-            artist_albums = additional_albums;
-          }
-        }
-
         all_albums = artist_albums;
       }
     });
+
+    // If all albums weren't retrieved in a single call, leave the link to the next round of albums
+    // to be collected in the the last album in the list
+    if (next_batch && all_albums.length > 0) {
+      all_albums[all_albums.length - 1].next_batch = next_batch;
+    }
 
     return all_albums;
   }
@@ -219,6 +203,11 @@ export class ArtistComponent implements OnInit, OnDestroy {
           });
           trackObj.artist = artists;
 
+          // If track exists in master playlist, mark it as taken
+          if (this.playlist_tracks[trackObj.id]) {
+            trackObj.is_taken = true;
+          }
+
           tracks.push(trackObj);
         });
 
@@ -243,12 +232,58 @@ export class ArtistComponent implements OnInit, OnDestroy {
     return all_tracks;
   }
 
-  trackClicked(track: any) {
-    console.log('TRACK CLICKED: ', track);
-    this.mainSvc.toTrackConfirmationModal.next(track);
-    this.confirmation_modal_open = true;
+  async parseTracksOfAlbums(albums: Album[]) {
+    albums.forEach(async (album: Album) => {
+      const tracks = await this.getAllTracks(album);
 
-    document.getElementById(`artistComponent`).classList.add('blur-background_in');
+      // If album has 'tracks' value, that means that they have been recursively added, and just need to add in tracks from the final call
+      if (album.tracks) {
+        album.tracks = album.tracks.concat(tracks);
+
+        // Track listings with more than 50 tracks will be out of order, so order by track_number
+        album.tracks.sort((a, b) => a.track_number - b.track_number)
+      }
+      else {
+        album.tracks = tracks;
+      }
+
+      // Calculate runtime of each album, and format each track runtime
+      let total_ms: any = 0;
+      album.tracks.forEach((track: Track) => {
+        const temp_duration = track.duration;
+        total_ms += temp_duration;
+        track.duration = this.msToTime(temp_duration);
+      });
+      album.runtime = this.msToTimeLong(total_ms);
+
+      // Format release_date correctly
+      const temp_date = album.release_date;
+      album.release_date = this.formatDate(temp_date, album.release_date_precision);
+    });
+
+    return albums;
+  }
+
+  trackClicked(track: Track) {
+    if (!track.is_taken) {
+      console.log('TRACK CLICKED: ', track);
+      this.mainSvc.toTrackConfirmationModal.next(track);
+      this.confirmation_modal_open = true;
+
+      document.getElementById(`artistComponent`).classList.add('blur-background_in');
+    }
+    else {
+      alert('This song has already been selected by someone else');
+    }
+
+    return;
+  }
+
+  async loadMoreAlbums(artist_id: string, next_url: string) {
+    let extra_albums = await this.getAlbums(artist_id, next_url);
+
+    extra_albums = await this.parseTracksOfAlbums(extra_albums);
+    this.albums = this.albums.concat(extra_albums);
   }
 
   // Waits for the search input/button to render before programmatically entering ID and clicking "Get Data"

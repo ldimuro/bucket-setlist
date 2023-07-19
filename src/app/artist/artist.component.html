@@ -14,7 +14,8 @@
                 <div>
                     <h2 style="padding-left: 20px;">{{album.album_name}}</h2>
                     <p style="padding-left: 20px;">{{album.release_date}}</p>
-                    <p style="padding-left: 20px">{{album.total_tracks}} song{{album.total_tracks > 1 ? 's' : ''}} &#8226; {{album.runtime}}</p>
+                    <p style="padding-left: 20px">{{album.total_tracks}} song{{album.total_tracks > 1 ? 's' : ''}}
+                        &#8226; {{album.runtime}}</p>
                 </div>
             </div>
 
@@ -29,7 +30,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr style="height: 40px;" *ngFor="let track of album.tracks" (click)="trackClicked(track)" class="tracks">
+                    <tr style="height: 40px;" *ngFor="let track of album.tracks" (click)="trackClicked(track)"
+                        class="tracks" [ngClass]="track.is_taken ? 'track-is-taken' : ''">
                         <td style="width: 2%" class="track-number">{{track.track_number}}</td>
                         <td style="width: 45%">
                             {{track.track_name}}</td>
@@ -39,6 +41,11 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- If all albums weren't retrieved in 1 batch, "Load More" will load the next batch -->
+        <div *ngIf="albums.length > 0 && albums[albums.length - 1]['next_batch']" class="center-div" style="margin-bottom: 50px; margin-top: 50px;">
+            <button class="load-more" (click)="loadMoreAlbums(artist.id, albums[albums.length - 1]['next_batch'])">LOAD MORE</button>
         </div>
     </div>
 </div>
