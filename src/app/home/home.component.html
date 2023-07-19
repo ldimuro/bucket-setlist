@@ -4,11 +4,25 @@
             <div>
                 <h1 style="font-weight: lighter;">Thank you <b>{{profile?.display_name}}</b></h1>
             </div>
-            <div>
+
+            <div class="chosen-track-info">
+                <img src="{{chosen_track?.cover_art}}" width="90px" height="90px">
+                <div class="chosen-track-info">
+                    <div style="text-align: left">
+                        <!-- <p style="padding-left: 20px;"><b>{{chosen_track?.track_name}}</b></p>
+                        <p style="padding-left: 20px">{{chosen_track?.artist}}</p> -->
+                        <div style="padding-left: 15px; font-size: 20px;"><b>{{chosen_track?.track_name}}</b></div>
+                        <div style="padding-left: 15px; margin-top: 5px; font-size: 14px;">{{chosen_track?.artist}}</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- <div>
                 <h2 style="font-weight: lighter;">You have chosen <b>{{chosen_track.track_name}}</b> by
                     <b>{{chosen_track.artist}}</b></h2>
             </div>
-            <img width=200px; height=200px; src="{{chosen_track.cover_art}}">
+            <img width=200px; height=200px; src="{{chosen_track.cover_art}}"> -->
         </div>
 
         <div *ngIf="show_playlist" style="margin-top: 40px;">

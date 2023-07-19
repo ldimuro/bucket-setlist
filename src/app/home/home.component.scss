@@ -12,3 +12,9 @@ img {
     -webkit-filter: drop-shadow(2px 2px 2px #666666);
     filter: drop-shadow(2px 2px 2px #666666);
 }
+
+.chosen-track-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
