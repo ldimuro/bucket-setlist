@@ -101,7 +101,7 @@ export class SpotifyService {
       albumsURL = next_url;
     }
     else {
-      albumsURL = `https://api.spotify.com/v1/artists/${artist_id}/albums?include_groups=album,single,compilation&limit=50`;
+      albumsURL = `https://api.spotify.com/v1/artists/${artist_id}/albums?include_groups=album,single,compilation&limit=25`;
     }
 
     const result = await fetch(albumsURL, {

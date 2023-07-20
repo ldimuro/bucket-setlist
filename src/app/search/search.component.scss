@@ -2,33 +2,59 @@
     text-align: center;
 }
 
+h1 {
+    font-family: 'JosefinSans_Bold', sans-serif;
+}
+
+// p, input {
+//     font-family: 'JosefinSans', sans-serif;
+// }
+
 .searchBar {
-    width: 30%;
+    width: 70%;
     height: 30px;
     font-size: 18px;
+    padding: 7px;
 
     border-radius: 5px;
     border-style: solid;
-    border-width: 1px;
+    border-width: 0.5px;
+    border-color: var(--font-color);
+
+    background-color: var(--background-color);
+    color: var(--font-color);
+    
 }
 
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgb(189, 189, 189);
+    opacity: 1; /* Firefox */
+  }
+
 .tab {
-    font-family: Arial, Helvetica, sans-serif;
+    // font-family: Arial, Helvetica, sans-serif;
     margin-right: 10px;
     margin-left: 10px;
     padding: 5px 20px 5px 20px;
-    border: solid black 1px;
+    border: solid var(--font-color) 1px;
     border-radius: 25px;
 }
 
 .tab:hover {
-    background-color: rgb(203, 242, 255);
+    // background-color: #147335;
+    // border-color: #147335;
+    // color: rgb(243, 243, 243);
+    opacity: 0.7;
     cursor: pointer;
 }
 
 .tab-selected {
-    background-color: rgb(135, 225, 255) !important;
+    background-color: #1db954 !important;
+    border-color: #1db954 !important;
+    color: var(--background-color) !important;
     cursor: default!important;
+    font-family: 'Montserrat_ExtraBold', sans-serif;
+    opacity: 1.0 !important;
 }
 
 .tabs {
@@ -50,7 +76,7 @@
     // margin-right: auto;
     display: flex;
     justify-content: center;
-    font-family: Arial, Helvetica, sans-serif;
+    // font-family: Arial, Helvetica, sans-serif;
     padding: 20px;
 }
 
@@ -85,12 +111,15 @@ table {
 .header {
     text-align: left;
     border-bottom: 0.5pt solid rgb(178, 178, 178);
-    font-weight: lighter;
+    // font-weight: lighter;
     color: rgb(178, 178, 178);
+    font-family: 'Montserrat', sans-serif;
 }
 
 .tracks:hover {
-    background-color: rgb(223, 237, 255);
+    // background-color: rgb(223, 237, 255);
+    // opacity: 0.5 !important;
+    background-color: rgb(34, 34, 34);
     cursor: pointer;
 }
 
@@ -115,13 +144,13 @@ table {
 
 .track-cover-art {
     border-radius: 7px;
-    border: lightgray solid 1px;
+    // border: lightgray solid 1px;
 }
 
 .track-is-taken, .track-is-taken:hover {
     opacity: 0.2;
     cursor: default !important;
-    background-color: white !important;
+    background-color: rgb(73, 73, 73) !important;
 }
 
 .album:hover {
@@ -139,7 +168,8 @@ table {
 .album-cover {
     display: table;
     margin: 0 auto;
-    border: lightgray solid 1px;
+    border-radius: 10px;
+    // border: lightgray solid 1px;
 }
 
 .album-text {
@@ -147,7 +177,7 @@ table {
     margin: 0 auto;
     margin-top: 5px;
     margin-bottom: 10px;
-    font-family: Arial, Helvetica, sans-serif;
+    // font-family: Arial, Helvetica, sans-serif;
 }
 
 .error-header {

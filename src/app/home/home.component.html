@@ -2,7 +2,7 @@
     <div class="center">
         <div>
             <div>
-                <h1 style="font-weight: lighter;">Thank you <b>{{profile?.display_name}}</b></h1>
+                <h1 class="thank-you">Thank you <span class="profile-name">{{profile?.display_name}}</span>!</h1>
             </div>
 
             <div class="chosen-track-info">
@@ -11,8 +11,12 @@
                     <div style="text-align: left">
                         <!-- <p style="padding-left: 20px;"><b>{{chosen_track?.track_name}}</b></p>
                         <p style="padding-left: 20px">{{chosen_track?.artist}}</p> -->
-                        <div style="padding-left: 15px; font-size: 20px;"><b>{{chosen_track?.track_name}}</b></div>
-                        <div style="padding-left: 15px; margin-top: 5px; font-size: 14px;">{{chosen_track?.artist}}</div>
+                        <div style="padding-left: 15px; font-size: 20px;">
+                            {{chosen_track?.track_name}}</div>
+                        <div
+                            style="padding-left: 15px; margin-top: 5px; font-size: 14px; font-family: 'Montserrat', sans-serif;">
+                            {{chosen_track?.artist}}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -28,7 +32,7 @@
         <div *ngIf="show_playlist" style="margin-top: 40px;">
             <iframe style="border-radius:12px;" id="playlist"
                 src="https://open.spotify.com/embed/playlist/5eJvHzeYF2BTaPGqfOoukM?utm_source=generator&theme=0"
-                width="60%" height="400px" frameBorder="0" allowfullscreen=""
+                width="95%" height="400px" frameBorder="0" allowfullscreen=""
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                 loading="lazy"></iframe>
         </div>

@@ -4,8 +4,8 @@
 
 img {
     border-radius: 10px;
-    -webkit-filter: drop-shadow(2px 2px 2px #666666);
-    filter: drop-shadow(2px 2px 2px #666666);
+    // -webkit-filter: drop-shadow(2px 2px 2px #666666);
+    // filter: drop-shadow(2px 2px 2px #666666);
 }
 
 table,
@@ -32,14 +32,14 @@ table {
 }
 
 .tracks:hover {
-    background-color: rgb(223, 237, 255);
+    background-color: rgb(34, 34, 34);
     cursor: pointer;
 }
 
 .track-is-taken, .track-is-taken:hover {
     opacity: 0.2;
     cursor: default !important;
-    background-color: white !important;
+    background-color: rgb(73, 73, 73) !important;
 }
 
 .album-info {
@@ -54,20 +54,22 @@ table {
     overflow: scroll;
     margin-left: auto;
     margin-right: auto;
-    font-family: Arial, Helvetica, sans-serif;
+    // font-family: Arial, Helvetica, sans-serif;
 }
 
 .col-header {
     text-align: left;
     border-bottom: 0.5pt solid rgb(178, 178, 178);
-    font-weight: lighter;
+    // font-weight: lighter;
     color: rgb(178, 178, 178);
+    font-family: 'Montserrat', sans-serif;
 }
 
 .header {
     text-align: center;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     font-size: 40px;
+    font-family: 'JosefinSans_Bold', sans-serif;
 }
 
 .blur-background_in {
@@ -96,14 +98,8 @@ table {
 }
 
 .load-more {
-    padding: 15px 35px;
-    font-size: larger;
-    background-color: white;
-    border: solid black 1.5px;
-    border-radius: 30px;
-}
-
-.load-more:hover {
-    background-color: rgb(223, 237, 255);
-    cursor: pointer;
+    font-size: 24px;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-family: 'Montserrat', sans-serif;
 }

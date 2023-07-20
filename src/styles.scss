@@ -1,1 +1,84 @@
 /* You can add global styles to this file, and also import other style files */
+
+@font-face {
+    font-family: "JosefinSans_Italic";
+    src: url(/assets/fonts/JosefinSans-Italic-VariableFont_wght.ttf) format("truetype");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "JosefinSans_Bold";
+    src: url(/assets/fonts/JosefinSans-VariableFont_wght.ttf) format("truetype");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "JosefinSans";
+    src: url(/assets/fonts/JosefinSans-VariableFont_wght.ttf) format("truetype");
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: "Montserrat_Italic_Bold";
+    src: url(/assets/fonts/Montserrat-Italic-VariableFont_wght.ttf) format("truetype");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "Montserrat_Italic";
+    src: url(/assets/fonts/Montserrat-Italic-VariableFont_wght.ttf) format("truetype");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "Montserrat_Bold";
+    src: url(/assets/fonts/Montserrat-VariableFont_wght.ttf) format("truetype");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "Montserrat_ExtraBold";
+    src: url(/assets/fonts/Montserrat-VariableFont_wght.ttf) format("truetype");
+    font-weight: 750;
+}
+
+@font-face {
+    font-family: "Montserrat";
+    src: url(/assets/fonts/Montserrat-VariableFont_wght.ttf) format("truetype");
+    font-weight: 300;
+}
+
+:root {
+    --background-color: rgb(48, 48, 48); // or any global you wish to share with components
+    --font-color: rgb(243, 243, 243);
+}
+
+body {
+    font-family: 'Montserrat_Bold', sans-serif;
+    background-color: var(--background-color);
+    color: var(--font-color);
+}
+
+p, input {
+    font-family: 'Montserrat', sans-serif;
+}
+
+table {
+    font-family: 'Montserrat_Bold', sans-serif;
+    color: var(--font-color);
+}
+
+button {
+    background-color: var(--background-color);
+    color: var(--font-color);
+    // border-color: var(--font-color);
+    border: solid var(--font-color) 1.5px;
+    border-radius: 15px;
+    padding: 5px 15px;
+    font-family: 'Montserrat_Bold';
+}
+
+button:hover {
+    opacity: 0.7;
+    cursor: pointer !important;
+}

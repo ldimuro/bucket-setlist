@@ -1,5 +1,5 @@
 .main {
-    font-family: Arial, Helvetica, sans-serif;
+    // font-family: Arial, Helvetica, sans-serif;
     height: 100vh;
 }
 
@@ -9,8 +9,16 @@
 
 img {
     border-radius: 10px;
-    -webkit-filter: drop-shadow(2px 2px 2px #666666);
-    filter: drop-shadow(2px 2px 2px #666666);
+    // -webkit-filter: drop-shadow(2px 2px 2px #666666);
+    // filter: drop-shadow(2px 2px 2px #666666);
+}
+
+.thank-you {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.profile-name {
+    font-family: 'Montserrat_ExtraBold', sans-serif;
 }
 
 .chosen-track-info {
