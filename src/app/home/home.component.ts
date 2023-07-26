@@ -40,7 +40,6 @@ export class HomeComponent implements OnInit, OnDestroy {
             4) Uncomment the firebase getter and now the cycle should be set
           */
 
-
           let storeRefreshToken;
           await this.firebaseSvc.getRefreshToken().then(data => {
             console.log('GOT REFRESH TOKEN: ', data);
@@ -60,7 +59,6 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.show_playlist = true;
 
           await this.firebaseSvc.postSelectedTrack(this.chosen_track);
-
         }
       });
 
