@@ -3,6 +3,7 @@ import { BucketSetlistService } from '../bucket-setlist.service';
 import { first } from 'rxjs/operators';
 import { SpotifyService, getAccessToken } from '../spotify/spotify.service';
 import { FirebaseService } from '../firebase/firebase.service';
+import { Track } from '../song-model';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   chosen_track;
   profile;
+  playlist_tracks: any[];
   show_playlist: boolean = false;
 
   constructor(
@@ -63,6 +65,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
 
     this.profile = await this.spotifySvc.getProfile();
+
+    this.firebaseSvc.toPlaylistTracks.subscribe(val => {
+      if (val) {
+        this.playlist_tracks = Object.keys(val);
+        console.log('TOTAL PLAYLIST: ', this.playlist_tracks);
+      }
+    });
   }
 
   async addSongToPlaylist(token: string, track_id: string) {

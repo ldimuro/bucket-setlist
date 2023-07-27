@@ -119,7 +119,10 @@ export class ArtistComponent implements OnInit, OnDestroy {
     let all_albums = [];
     let next_batch;
 
+    console.log('ARTIST ID: ', artist_id);
+
     await this.spotifySvc.getAlbumsOfArtist(this.spotifySvc.getAccessToken(), artist_id, next_url).then(async data => {
+      console.log('DATA: ', data);
       if (data['error']) {
         this.mainSvc.toError.next({ status: data['error']['status'], message: data['error']['message'], component: 'ArtistComponent', function: 'getAlbumsOfArtist()' });
         this.router.navigate(['/search']);
@@ -161,6 +164,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       all_albums[all_albums.length - 1].next_batch = next_batch;
     }
 
+    console.log('RETURNED ALBUMS: ', all_albums);
     return all_albums;
   }
 
